@@ -1,0 +1,43 @@
+.task {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .task-icon {
+        line-height: 0;
+
+        .mat-icon {
+            font-size: 3rem;
+            height: 3rem;
+            width: 3rem;
+        }
+
+        .task-icon-inner {
+            padding: .5rem;
+            border-radius: .5rem;
+            background-color: var(--task-upcoming);
+        }
+    }
+    .task-content {
+        .task-title {
+            margin: 0;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .task-description {
+            font-size: .875rem;
+        }
+    }
+    .task-complete {
+        button {
+            background-color: var(--primary);
+        }
+    }
+    .task-snooze {
+        margin-left: auto;
+        button {
+            color: var(--dark)
+        }
+    }
+}

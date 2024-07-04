@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>Create a Task</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="createTaskForm">
+
+        <div class="task-title-wrapper mb-3">
+            <mat-form-field class="full-width-input">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+
+                @if (this.createTaskForm.controls['title'].hasError('required')) {
+                    <mat-error>Title is required</mat-error>
+                }
+            </mat-form-field>
+        </div>
+        
+        <div class="task-desc-wrapper mb-3">
+            <mat-form-field class="full-width-input">
+                <mat-label>Description</mat-label>
+                <input matInput formControlName="description">
+            </mat-form-field>
+        </div>
+        
+        <div class="task-options mb-3">
+            
+            <div class="task-type-wrapper">
+                <p>Recurrance</p>
+                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="recurrance">
+                    <mat-button-toggle value="interval">Interval</mat-button-toggle>
+                    <mat-button-toggle value="days">Days</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+            
+            <div class="task-priority-wrapper">
+                <p>Priority</p>
+                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="priority">
+                    <mat-button-toggle value="low">Low</mat-button-toggle>
+                    <mat-button-toggle value="normal">Normal</mat-button-toggle>
+                    <mat-button-toggle value="high">High</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+            
+        </div>
+        
+        <div class="task-frequency mb-3">
+            <p>Recur every {{ this.createTaskForm.controls['frequency'].value }} {{ this.createTaskForm.controls['recurrance'].value === "interval" ? "day" : "week" }}{{ this.createTaskForm.controls['frequency'].value == '1' ? "" : "s" }}</p>
+            <mat-slider class="full-width-input-slider" min="1" max="60" step="1">
+                <input matSliderThumb formControlName="frequency">
+            </mat-slider>
+        </div>
+        
+        <div *ngIf="this.createTaskForm.controls['recurrance'].value === 'days'" class="task-days-wrapper mb-3">
+            <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="days">
+                <mat-button-toggle value="1">Sun</mat-button-toggle>
+                <mat-button-toggle value="2">Mon</mat-button-toggle>
+                <mat-button-toggle value="3">Tue</mat-button-toggle>
+                <mat-button-toggle value="4">Wed</mat-button-toggle>
+                <mat-button-toggle value="5">Thu</mat-button-toggle>
+                <mat-button-toggle value="6">Fri</mat-button-toggle>
+                <mat-button-toggle value="7">Sat</mat-button-toggle>
+            </mat-button-toggle-group>
+            @if (this.createTaskForm.controls['days'].hasError('daysRequired') && (this.createTaskForm.controls['days'].touched || this.createTaskForm.controls['days'].dirty)) {
+                <mat-error>Please select at least one day</mat-error>
+            }
+        </div> 
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button (click)="submit()">Install</button>
+</mat-dialog-actions>

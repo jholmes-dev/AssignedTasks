@@ -1,0 +1,9 @@
+@if (tasks.length === 0) {
+  <app-task-grid-empty></app-task-grid-empty>
+}
+
+<div class="tasks-wrapper">
+  @for (task of tasks; track task.id) {
+    <app-task [task]="task"></app-task>
+  }
+</div>

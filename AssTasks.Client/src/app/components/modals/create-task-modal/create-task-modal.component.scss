@@ -1,0 +1,32 @@
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+    background-color: var(--primary);
+}
+
+.task-options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .task-priority-wrapper, .task-type-wrapper {
+        text-align: center;
+        flex: 1 1 50%;
+        p {
+            margin: 0;
+        }
+    }
+}
+
+.task-frequency {
+
+    p {
+        margin: 0;
+    }
+}
+
+.task-days-wrapper {
+    text-align: center;
+    
+    p {
+        margin: 0;
+    }
+}

@@ -1,0 +1,26 @@
+<div class="task">
+    <div class="task-icon">
+        <div class="task-icon-inner">
+            <mat-icon class="material-symbols-outlined">dishwasher</mat-icon>
+        </div>
+    </div>
+    <div class="task-content">
+        <h4 class="task-title">{{ task.parent.title }}</h4>
+
+        @if (!!task.parent.description) {
+        <div class="task-description">
+            {{ task.parent.description }}
+        </div>
+        }
+    </div>
+    <div class="task-snooze">
+        <button mat-icon-button>
+            <mat-icon class="material-symbols-outlined">next_plan</mat-icon>
+        </button>
+    </div>
+    <div class="task-complete">
+        <button mat-fab>
+            <mat-icon fontIcon="check"></mat-icon>
+        </button>
+    </div>
+</div>
