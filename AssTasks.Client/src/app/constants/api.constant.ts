@@ -1,3 +1,3 @@
 export enum APIConfig {
-    url = "https://localhost:7291/api/"
+    url = "http://localhost:5209/api/"
 }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Task } from '../../models/task';
-import { TaskService } from '../../services/task.service';
+import { AssTaskService } from '../../services/ass-task.service';
 import { TaskGridEmptyComponent } from '../task-grid-empty/task-grid-empty.component';
 import { TaskComponent } from '../task/task.component';
 
@@ -16,10 +16,10 @@ export class TaskGridComponent {
   public tasks: Task[] = [];
 
   constructor(
-      private taskService: TaskService
+      private taskService: AssTaskService
   ) {}
 
   ngOnInit() {
-    this.taskService.getTasks().subscribe(tasks => this.tasks = tasks);
+    this.taskService.getTasks().subscribe((tasks: Task[]) => this.tasks = tasks);
   }
 }

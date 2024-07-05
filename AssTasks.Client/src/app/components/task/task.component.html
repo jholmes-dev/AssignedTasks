@@ -5,11 +5,11 @@
         </div>
     </div>
     <div class="task-content">
-        <h4 class="task-title">{{ task.parent.title }}</h4>
+        <h4 class="task-title">{{ task.taskParent.title }}</h4>
 
-        @if (!!task.parent.description) {
+        @if (!!task.taskParent.description) {
         <div class="task-description">
-            {{ task.parent.description }}
+            {{ task.taskParent.description }}
         </div>
         }
     </div>

@@ -92,10 +92,17 @@ namespace AssTasks.Server.Controllers
         [HttpPost("CreateAndGenerateTask")]
         public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(TaskParent taskParent)
         {
+            // Create the task parent
             _context.TaskParents.Add(taskParent);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(PostTaskParent), new { id = taskParent.Id }, taskParent);
+            // Generate a task from the parent
+            var generatedTask = await _assTaskService.GenerateTaskFromParent(taskParent);
+            generatedTask.TaskParent = taskParent;
+
+            return Ok(generatedTask);
+
+            //return CreatedAtAction(nameof(PostTaskParentAndGenerateTask), new { id = generatedTask.Id }, generatedTask);
         }
 
         // DELETE: api/TaskParents/5

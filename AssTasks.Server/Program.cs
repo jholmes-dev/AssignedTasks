@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
 using AssTasks.Server.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -25,7 +26,13 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    }
+);
+
 builder.Services.AddDbContext<AssTasksContext>(opt =>
     opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();

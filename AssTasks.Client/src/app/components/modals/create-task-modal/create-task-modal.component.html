@@ -21,34 +21,34 @@
         </div>
         
         <div class="task-options mb-3">
-            
+
             <div class="task-type-wrapper">
                 <p>Recurrance</p>
-                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="recurrance">
-                    <mat-button-toggle value="interval">Interval</mat-button-toggle>
-                    <mat-button-toggle value="days">Days</mat-button-toggle>
+                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="frequencyType">
+                    <mat-button-toggle [value]="taskTypes.INTERVAL_TASK">Interval</mat-button-toggle>
+                    <mat-button-toggle [value]="taskTypes.DAYS_TASK">Days</mat-button-toggle>
                 </mat-button-toggle-group>
             </div>
             
             <div class="task-priority-wrapper">
                 <p>Priority</p>
                 <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="priority">
-                    <mat-button-toggle value="low">Low</mat-button-toggle>
-                    <mat-button-toggle value="normal">Normal</mat-button-toggle>
-                    <mat-button-toggle value="high">High</mat-button-toggle>
+                    <mat-button-toggle [value]="taskPriorities.LOW">Low</mat-button-toggle>
+                    <mat-button-toggle [value]="taskPriorities.NORMAL">Normal</mat-button-toggle>
+                    <mat-button-toggle [value]="taskPriorities.HIGH">High</mat-button-toggle>
                 </mat-button-toggle-group>
             </div>
             
         </div>
         
         <div class="task-frequency mb-3">
-            <p>Recur every {{ this.createTaskForm.controls['frequency'].value }} {{ this.createTaskForm.controls['recurrance'].value === "interval" ? "day" : "week" }}{{ this.createTaskForm.controls['frequency'].value == '1' ? "" : "s" }}</p>
+            <p>Recur every {{ this.createTaskForm.controls['frequency'].value }} {{ this.createTaskForm.controls['frequencyType'].value === taskTypes.INTERVAL_TASK ? "day" : "week" }}{{ this.createTaskForm.controls['frequency'].value == '1' ? "" : "s" }}</p>
             <mat-slider class="full-width-input-slider" min="1" max="60" step="1">
                 <input matSliderThumb formControlName="frequency">
             </mat-slider>
         </div>
         
-        <div *ngIf="this.createTaskForm.controls['recurrance'].value === 'days'" class="task-days-wrapper mb-3">
+        <div *ngIf="this.createTaskForm.controls['frequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
             <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="days">
                 <mat-button-toggle value="1">Sun</mat-button-toggle>
                 <mat-button-toggle value="2">Mon</mat-button-toggle>
@@ -66,7 +66,7 @@
     </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions class="space-between">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button (click)="submit()">Install</button>
+    <button mat-flat-button (click)="submit()">Create</button>
 </mat-dialog-actions>

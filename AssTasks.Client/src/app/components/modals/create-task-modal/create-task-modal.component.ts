@@ -6,9 +6,13 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+
+import { TaskPriorities, TaskTypes } from '../../../constants/task.constants';
+import { CreateAssTaskView } from '../../../models/views/create-asstask-view.model';
+import { AssTaskService } from '../../../services/ass-task.service';
 
 @Component({
   selector: 'app-create-task-modal',
@@ -26,7 +30,14 @@ import { MatSliderModule } from '@angular/material/slider';
   styleUrl: './create-task-modal.component.scss'
 })
 export class CreateTaskModalComponent {
-  createTaskForm!: FormGroup; 
+  public createTaskForm!: FormGroup; 
+  public taskTypes = TaskTypes;
+  public taskPriorities = TaskPriorities;
+
+  constructor(
+    private assTaskService: AssTaskService,
+    private dialogRef: MatDialogRef<CreateTaskModalComponent>
+  ) {}
 
   ngOnInit(): void {
     this.createTaskForm = new FormGroup({
@@ -34,10 +45,10 @@ export class CreateTaskModalComponent {
         Validators.required,
       ]),
       description: new FormControl(''),
-      recurrance: new FormControl('interval', [
+      frequencyType: new FormControl(this.taskTypes.INTERVAL_TASK, [
         Validators.required,
       ]),
-      priority: new FormControl('normal', [
+      priority: new FormControl(this.taskPriorities.NORMAL, [
         Validators.required,
       ]),
       frequency: new FormControl('1', [
@@ -49,9 +60,13 @@ export class CreateTaskModalComponent {
     });
   }
 
+  /**
+   * Marks the days array as required or optional depending on the recurrance selected
+   * @returns if required or not
+   */
   daysRequiredIfRecurranceIsDays(): ValidatorFn { 
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.parent?.get('recurrance')?.value === "days" && control.value) {
+      if (control.parent?.get('frequencyType')?.value === this.taskTypes.DAYS_TASK && control.value) {
         return control.value.length <= 0 ? 
           {daysRequired: {value: control.value}} : null;
       }
@@ -60,7 +75,20 @@ export class CreateTaskModalComponent {
   }
 
   submit(): void {
-    //
+    // Reevaluate the days field
+    this.createTaskForm.get('days')?.updateValueAndValidity();
+
+    if (this.createTaskForm.valid) {
+      const taskData: CreateAssTaskView = this.createTaskForm.value;
+      
+      this.assTaskService
+        .createTask(taskData)
+        .subscribe({
+          next: () => {
+           this.dialogRef.close();
+          }
+      });
+    }
   }
 
 }
