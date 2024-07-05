@@ -1,10 +1,19 @@
-<div class="task">
+<div class="task" [class]="getDueClass(task.dueAt)">
+
+    <div class="task-warning-icon">
+        <div class="task-warning-icon-inner">
+            <mat-icon *ngIf="isOverdue(task.dueAt)" class="material-symbols-outlined">danger</mat-icon>
+            <mat-icon *ngIf="isDueToday(task.dueAt)" class="material-symbols-outlined">warning</mat-icon>
+        </div>
+    </div>
+
     <div class="task-icon">
         <div class="task-icon-inner">
             <mat-icon class="material-symbols-outlined">dishwasher</mat-icon>
         </div>
     </div>
     <div class="task-content">
+        <p class="task-due">{{ this.getDueDateString(task.dueAt) }}</p>
         <h4 class="task-title">{{ task.taskParent.title }}</h4>
 
         @if (!!task.taskParent.description) {

@@ -2,9 +2,9 @@ import { TaskParent } from './task-parent';
 
 export interface Task {
     id: number;
-    createdAt: Date;
-    completedAt?: Date;
-    dueAt?: Date;
+    createdAt: string;
+    completedAt?: string;
+    dueAt: string;
     completedBy?: number;
 
     taskParent: TaskParent;

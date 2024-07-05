@@ -26,6 +26,7 @@ namespace AssTasks.Server.Controllers
         {
             var assTasks = await _context.AssTasks
                 .Include(at => at.TaskParent)
+                .OrderBy(at => at.DueAt)
                 .ToListAsync();
 
             return assTasks;

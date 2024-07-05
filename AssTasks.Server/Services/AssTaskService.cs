@@ -34,12 +34,15 @@ namespace AssTasks.Server.Services
         /// <returns>A new interval based AssTask</returns>
         public async Task<AssTask> GenerateIntervalTask(TaskParent parent)
         {
+            // If no tasks exist, we generate one for today. Otherwise we generate one based off the parent's period
+            var dueDate = parent.AssTasks.Count == 0 ? DateTime.UtcNow : DateTime.UtcNow.AddDays(parent.Frequency);
+
             // Generate new AssTask
             var newTask = new AssTask
             {
                 TaskParentId = parent.Id,
                 CreatedAt = DateTime.UtcNow,
-                DueAt = DateTime.UtcNow.AddDays(parent.Frequency)
+                DueAt = dueDate
             };
 
             // Add new task to the database

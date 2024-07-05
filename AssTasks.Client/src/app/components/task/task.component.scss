@@ -3,9 +3,29 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    border-radius: 1rem;
+    position: relative;
 
+    .task-warning-icon {
+        position: absolute;
+        top: -.8rem;
+        left: -.8rem;
+        z-index: 9;
+        line-height: 0;
+
+        .task-warning-icon-inner {
+            background: orange;
+            border-radius: 100px;
+        }
+        .mat-icon {
+            font-size: 1.6rem;
+            height: 1.6rem;
+            width: 1.6rem;
+        }
+    }
     .task-icon {
         line-height: 0;
+        align-self: flex-start;
 
         .mat-icon {
             font-size: 3rem;
@@ -20,6 +40,13 @@
         }
     }
     .task-content {
+        margin: .5rem 0;
+
+        .task-due {
+            margin: 0;
+            font-size: .875rem;
+            line-height: 1;
+        }
         .task-title {
             margin: 0;
             font-size: 1.5rem;
@@ -40,4 +67,18 @@
             color: var(--dark)
         }
     }
+}
+
+.task.task-due-overdue {
+    background: red;
+}
+
+.task.task-due-today {
+    background: linear-gradient(to right, #fff4de, transparent);
+    border-radius: 1rem;
+}
+
+.task.task-due-tomorrow {
+    background: linear-gradient(to right, #f7ffdc, transparent);
+    border-radius: 1rem;
 }

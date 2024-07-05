@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -11,10 +11,19 @@ import { CreateAssTaskView } from '../models/views/create-asstask-view.model';
   providedIn: 'root'
 })
 export class AssTaskService {
+  private assTasksUpdated = new Subject<boolean>();
 
   constructor(
     private httpClient: HttpClient
   ) { }
+
+  watchAssTasks(): Observable<boolean> {
+    return this.assTasksUpdated.asObservable();
+  }
+
+  emitAssTasksUpdated(): void {
+    this.assTasksUpdated.next(true);
+  }
 
   /**
    * Gets a specific task by ID
@@ -38,6 +47,14 @@ export class AssTaskService {
    * @returns the created AssTask
    */
   createTask(taskData: CreateAssTaskView): Observable<Task> {
-    return this.httpClient.post<Task>(APIConfig.url + "TaskParents/CreateAndGenerateTask", taskData);
+    return this.httpClient
+      .post<Task>(APIConfig.url + "TaskParents/CreateAndGenerateTask", taskData)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
   }
 }

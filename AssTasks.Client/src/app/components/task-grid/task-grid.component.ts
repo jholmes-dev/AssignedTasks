@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 import { Component } from '@angular/core';
 
 import { Task } from '../../models/task';
@@ -14,12 +16,31 @@ import { TaskComponent } from '../task/task.component';
 })
 export class TaskGridComponent {
   public tasks: Task[] = [];
+  private watchTasksSub!: Subscription;
 
   constructor(
       private taskService: AssTaskService
   ) {}
 
   ngOnInit() {
+    // Initial get call
+    this.getAssTasks();
+
+    // Refresh tasks each time taskService emits changes
+    this.watchTasksSub = this.taskService
+      .watchAssTasks()
+      .subscribe({
+        next: () => {
+          this.getAssTasks();
+        }
+      });
+  }
+
+  getAssTasks(): void {
     this.taskService.getTasks().subscribe((tasks: Task[]) => this.tasks = tasks);
+  }
+
+  ngOnDestroy() {
+    this.watchTasksSub.unsubscribe();
   }
 }
