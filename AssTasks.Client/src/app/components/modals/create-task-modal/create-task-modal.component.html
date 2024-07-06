@@ -50,13 +50,13 @@
         
         <div *ngIf="this.createTaskForm.controls['frequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
             <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="days">
-                <mat-button-toggle value="1">Sun</mat-button-toggle>
-                <mat-button-toggle value="2">Mon</mat-button-toggle>
-                <mat-button-toggle value="3">Tue</mat-button-toggle>
-                <mat-button-toggle value="4">Wed</mat-button-toggle>
-                <mat-button-toggle value="5">Thu</mat-button-toggle>
-                <mat-button-toggle value="6">Fri</mat-button-toggle>
-                <mat-button-toggle value="7">Sat</mat-button-toggle>
+                <mat-button-toggle value="0">Sun</mat-button-toggle>
+                <mat-button-toggle value="1">Mon</mat-button-toggle>
+                <mat-button-toggle value="2">Tue</mat-button-toggle>
+                <mat-button-toggle value="3">Wed</mat-button-toggle>
+                <mat-button-toggle value="4">Thu</mat-button-toggle>
+                <mat-button-toggle value="5">Fri</mat-button-toggle>
+                <mat-button-toggle value="6">Sat</mat-button-toggle>
             </mat-button-toggle-group>
             @if (this.createTaskForm.controls['days'].hasError('daysRequired') && (this.createTaskForm.controls['days'].touched || this.createTaskForm.controls['days'].dirty)) {
                 <mat-error>Please select at least one day</mat-error>

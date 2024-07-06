@@ -33,7 +33,7 @@ export class TaskComponent {
 
   getDueDateString(due: string): string {
     if (this.isOverdue(due)) {
-      return "Due date has passed";
+      return "Overdue";
     } else if (this.isDueToday(due)) {
       return "Due today";
     } else if (this.isDueTomorrow(due)) {

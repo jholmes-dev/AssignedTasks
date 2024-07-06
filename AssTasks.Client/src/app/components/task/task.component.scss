@@ -5,6 +5,7 @@
     margin-bottom: 1rem;
     border-radius: 1rem;
     position: relative;
+    border-radius: 1rem;
 
     .task-warning-icon {
         position: absolute;
@@ -70,15 +71,48 @@
 }
 
 .task.task-due-overdue {
-    background: red;
+    background: linear-gradient(to right, #ff9292, transparent);
+
+    .task-warning-icon {
+        .task-warning-icon-inner {
+            background: red;
+            color: white;
+            animation: shakeicon 3s linear 0s infinite;
+        }
+    }
 }
 
 .task.task-due-today {
     background: linear-gradient(to right, #fff4de, transparent);
-    border-radius: 1rem;
 }
 
 .task.task-due-tomorrow {
     background: linear-gradient(to right, #f7ffdc, transparent);
-    border-radius: 1rem;
+}
+
+@keyframes shakeicon {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-20deg);
+    }
+    55% {
+        transform: rotate(20deg);
+    }
+    60% {
+        transform: rotate(-10deg);
+    }
+    65% {
+        transform: rotate(10deg);
+    }
+    70% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+    80% {
+        transform: rotate(0deg);
+    }
 }
