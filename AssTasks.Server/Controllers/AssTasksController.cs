@@ -105,6 +105,19 @@ namespace AssTasks.Server.Controllers
             return NoContent();
         }
 
+        public async Task<IActionResult> CompleteAssTask(int id)
+        {
+            var assTask = await _context.AssTasks.FindAsync(id);
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            // TODO: Mark task as complete and generate new task
+
+            return NoContent();
+        }
+
         private bool AssTaskExists(int id)
         {
             return _context.AssTasks.Any(e => e.Id == id);

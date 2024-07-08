@@ -17,10 +17,17 @@ export class AssTaskService {
     private httpClient: HttpClient
   ) { }
 
+  /**
+   * Watcher method for receiving notifications that the task list has been updated
+   * @returns A watchable that emits when the task list updates
+   */
   watchAssTasks(): Observable<boolean> {
     return this.assTasksUpdated.asObservable();
   }
 
+  /**
+   * Emitter method for when the list of tasks is updated
+   */
   emitAssTasksUpdated(): void {
     this.assTasksUpdated.next(true);
   }

@@ -3,7 +3,9 @@ import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+import { Modals } from '../../constants/modals.constant';
 import { Task } from '../../models/task';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-task',
@@ -18,6 +20,14 @@ import { Task } from '../../models/task';
 })
 export class TaskComponent {
   @Input() task!: Task;
+
+  constructor(
+    private modalService: ModalService
+  ) {}
+
+  openCompleteTaskDialog() {
+    this.modalService.emitModalState(Modals.COMPLETE_TASK, true);
+  }
 
   getDueClass(due: string): string {
     if (this.isOverdue(due)) {

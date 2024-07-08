@@ -5,6 +5,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { Modals } from '../../constants/modals.constant';
 import { ModalService } from '../../services/modal.service';
+import {
+    CompleteTaskModalComponent
+} from '../modals/complete-task-modal/complete-task-modal.component';
 import { CreateTaskModalComponent } from '../modals/create-task-modal/create-task-modal.component';
 
 @Component({
@@ -18,19 +21,29 @@ import { CreateTaskModalComponent } from '../modals/create-task-modal/create-tas
 })
 export class ModalControllerComponent {
   readonly createTaskDialog = inject(MatDialog);
+  readonly completeTaskDialog = inject(MatDialog);
+
   createTaskSub!: Subscription;
+  completeTaskSub!: Subscription;
 
   constructor(
     private modalService: ModalService
   ) {}
 
   ngOnInit() {
-    // Add task modal
+    // Add Create Task Modal
     this.createTaskSub = this.modalService.getModalSubject(Modals.CREATE_TASK).subscribe((state: boolean) => {
       if (state) {
         this.createTaskDialog.open(CreateTaskModalComponent, {
           width: "700px"
         });
+      }
+    });
+    
+    // Add Complete Task Modal
+    this.completeTaskSub = this.modalService.getModalSubject(Modals.COMPLETE_TASK).subscribe((state: boolean) => {
+      if (state) {
+        this.completeTaskDialog.open(CompleteTaskModalComponent);
       }
     });
   }

@@ -19,10 +19,10 @@ namespace AssTasks.Server.Services
         /// <param name="parent">The parent to draw details from</param>
         /// <returns>A newly generated AssTask</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided parent.FrequencyType is not supported</exception>
-        public async Task<AssTask> GenerateTaskFromParent(TaskParent parent) => parent.FrequencyType switch
+        public AssTask GenerateTaskFromParent(TaskParent parent) => parent.FrequencyType switch
         {
-            TaskConstants.INTERVAL_TASK => await GenerateIntervalTask(parent),
-            TaskConstants.DAYS_TASK => await GenerateDaysTask(parent),
+            TaskConstants.INTERVAL_TASK => GenerateIntervalTask(parent),
+            TaskConstants.DAYS_TASK => GenerateDaysTask(parent),
             _ => throw new ArgumentOutOfRangeException($"ParentTask.FrequencyType value is not supported: {parent.FrequencyType}"),
         };
 
@@ -32,7 +32,7 @@ namespace AssTasks.Server.Services
         /// </summary>
         /// <param name="parent">The task's parent to draw details from</param>
         /// <returns>A new interval based AssTask</returns>
-        public async Task<AssTask> GenerateIntervalTask(TaskParent parent)
+        public AssTask GenerateIntervalTask(TaskParent parent)
         {
             // If no tasks exist, we generate one for today. Otherwise we generate one based off the parent's period
             var dueDate = parent.AssTasks.Count == 0 ? DateTime.UtcNow : DateTime.UtcNow.AddDays(parent.Frequency);
@@ -45,14 +45,10 @@ namespace AssTasks.Server.Services
                 DueAt = dueDate
             };
 
-            // Add new task to the database
-            await _context.AssTasks.AddAsync(newTask);
-            await _context.SaveChangesAsync();
-
             return newTask;
         }
 
-        public async Task<AssTask> GenerateDaysTask(TaskParent parent)
+        public AssTask GenerateDaysTask(TaskParent parent)
         {
             // Get start date, and set it to the previous-most Sunday
             var startDate = parent.CreatedAt.AddDays(-(int)parent.CreatedAt.DayOfWeek);
@@ -80,6 +76,7 @@ namespace AssTasks.Server.Services
                 if (day >= (int)DateTime.UtcNow.DayOfWeek)
                 {
                     nextDate = today.AddDays(day);
+                    break;
                 }
             }
 
@@ -90,10 +87,6 @@ namespace AssTasks.Server.Services
                 CreatedAt = DateTime.UtcNow,
                 DueAt = nextDate
             };
-
-            // Add new task to the database
-            await _context.AssTasks.AddAsync(newTask);
-            await _context.SaveChangesAsync();
 
             return newTask;
         }

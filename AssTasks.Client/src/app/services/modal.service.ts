@@ -9,11 +9,15 @@ import { Modals } from '../constants/modals.constant';
 })
 export class ModalService {
   private createTaskModalSubject = new Subject<boolean>();
+  private completeTaskModalSubject = new Subject<boolean>();
 
   emitModalState(name: Modals, state: boolean): void {
     switch (name) {
       case Modals.CREATE_TASK:
         this.createTaskModalSubject.next(state);
+        break;
+      case Modals.COMPLETE_TASK:
+        this.completeTaskModalSubject.next(state);
         break;
     }
   }
@@ -22,6 +26,8 @@ export class ModalService {
     switch (name) {
       case Modals.CREATE_TASK:
         return this.createTaskModalSubject.asObservable();
+      case Modals.COMPLETE_TASK:
+        return this.completeTaskModalSubject.asObservable();
       default:
         return of(false);
     }

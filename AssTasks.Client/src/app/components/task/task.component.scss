@@ -3,14 +3,22 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
-    border-radius: 1rem;
-    position: relative;
-    border-radius: 1rem;
+    
+    .task-inner {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-radius: 1rem;
+        position: relative;
+        border-radius: 1rem;
+        padding-right: 1rem;
+        flex: 1;
+    }
 
     .task-warning-icon {
         position: absolute;
-        top: -.8rem;
-        left: -.8rem;
+        top: -.6rem;
+        left: -.6rem;
         z-index: 9;
         line-height: 0;
 
@@ -19,9 +27,9 @@
             border-radius: 100px;
         }
         .mat-icon {
-            font-size: 1.6rem;
-            height: 1.6rem;
-            width: 1.6rem;
+            font-size: 1.2rem;
+            height: 1.2rem;
+            width: 1.2rem;
         }
     }
     .task-icon {
@@ -70,23 +78,38 @@
     }
 }
 
-.task.task-due-overdue {
-    background: linear-gradient(to right, #ff9292, transparent);
+.task-due-overdue .task-inner {
+    background: linear-gradient(-20deg, #ff3939 20%, #ff8181);
+    box-shadow: inset 0px 0px 8px rgba(0, 0, 0, .2);
+    animation: movbg 20s ease 0s infinite;
+    background-size: 300%;
+
+    .task-content {
+        color: white;
+    }
 
     .task-warning-icon {
+        top: -.8rem;
+        left: -.8rem;
+
         .task-warning-icon-inner {
             background: red;
             color: white;
             animation: shakeicon 3s linear 0s infinite;
+        }        
+        .mat-icon {
+            font-size: 1.6rem;
+            height: 1.6rem;
+            width: 1.6rem;
         }
     }
 }
 
-.task.task-due-today {
+.task-due-today .task-inner {
     background: linear-gradient(to right, #fff4de, transparent);
 }
 
-.task.task-due-tomorrow {
+.task-due-tomorrow .task-inner {
     background: linear-gradient(to right, #f7ffdc, transparent);
 }
 
@@ -114,5 +137,17 @@
     }
     80% {
         transform: rotate(0deg);
+    }
+}
+
+@keyframes movbg {
+    0% {
+        background-position: 0%;
+    }
+    50% {
+        background-position: 100%;
+    }
+    100% {
+        background-position: 0%;
     }
 }
