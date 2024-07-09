@@ -54,28 +54,33 @@ namespace AssTasks.Server.Services
             var startDate = parent.CreatedAt.AddDays(-(int)parent.CreatedAt.DayOfWeek);
 
             // Get today, and set to the previous-most Sunday
-            var today = DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+            var taskDate = DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+
+            // Current timestamp
+            var currentDateTime = DateTime.UtcNow;
 
             // If there are no more upcoming task days this week, add a week to today
-            if (parent.Days != null && parent.Days.Last() < (int)DateTime.UtcNow.DayOfWeek)
+            if (parent.Days != null && parent.Days.Last() < (int)currentDateTime.DayOfWeek)
             {
-                today = today.AddDays(7);
+                taskDate = taskDate.AddDays(7);
             }
 
             // Get number of weeks until the next active week
-            var weeks = (int)((today - startDate).TotalDays / 7) % parent.Frequency;
+            var weeks = (int)((taskDate - startDate).TotalDays / 7) % parent.Frequency;
             weeks = weeks == 0 ? 0 : parent.Frequency - weeks;
-            
+
             // Add that number of days to today
-            today = today.AddDays(weeks * 7);
+            taskDate = taskDate.AddDays(weeks * 7);
 
             // Loop through days array, find next non-passed day
-            var nextDate = DateTime.UtcNow;
             foreach (var day in parent.Days!) 
             {
-                if (day >= (int)DateTime.UtcNow.DayOfWeek)
+                // If our task date (which is the start of the next non-passed task week
+                // plus the days in the current iteration is greater than right now
+                // then we've found our next task date
+                if (taskDate.AddDays(day).Date >= currentDateTime.Date)
                 {
-                    nextDate = today.AddDays(day);
+                    taskDate = taskDate.AddDays(day);
                     break;
                 }
             }
@@ -85,7 +90,7 @@ namespace AssTasks.Server.Services
             {
                 TaskParentId = parent.Id,
                 CreatedAt = DateTime.UtcNow,
-                DueAt = nextDate
+                DueAt = taskDate
             };
 
             return newTask;

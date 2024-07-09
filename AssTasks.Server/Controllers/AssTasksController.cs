@@ -105,6 +105,7 @@ namespace AssTasks.Server.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/complete")]
         public async Task<IActionResult> CompleteAssTask(int id)
         {
             var assTask = await _context.AssTasks.FindAsync(id);
