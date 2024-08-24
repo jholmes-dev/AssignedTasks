@@ -29,7 +29,7 @@ export class TaskComponent {
     this.modalService.emitModalState(Modals.COMPLETE_TASK, true);
   }
 
-  getDueClass(due: string): string {
+  getDueClass(due: Date): string {
     if (this.isOverdue(due)) {
       return "task-due-overdue";
     } else if (this.isDueToday(due)) {
@@ -41,7 +41,7 @@ export class TaskComponent {
     }
   }
 
-  getDueDateString(due: string): string {
+  getDueDateString(due: Date): string {
     if (this.isOverdue(due)) {
       return "Overdue";
     } else if (this.isDueToday(due)) {
@@ -53,7 +53,7 @@ export class TaskComponent {
     }
   }
 
-  isOverdue(due:string): boolean {
+  isOverdue(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
@@ -61,7 +61,7 @@ export class TaskComponent {
     return dueDate < today;
   }
 
-  isDueToday(due: string): boolean {
+  isDueToday(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
@@ -69,7 +69,7 @@ export class TaskComponent {
     return dueDate.getTime() === today.getTime();
   }
 
-  isDueTomorrow(due: string): boolean {
+  isDueTomorrow(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);

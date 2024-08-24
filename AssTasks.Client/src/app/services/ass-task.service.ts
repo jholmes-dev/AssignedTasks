@@ -1,4 +1,4 @@
-import { Observable, Subject, tap } from 'rxjs';
+import { map, Observable, Subject, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -46,7 +46,17 @@ export class AssTaskService {
    * @returns all tasks
    */
   getTasks(): Observable<Task[]> {
-    return this.httpClient.get<Task[]>(APIConfig.url + "AssTasks");
+    return this.httpClient.get<Task[]>(APIConfig.url + "AssTasks")
+      .pipe(
+        map((tasks: Task[]) => {
+          return tasks.map((task: Task) => {
+            task.createdAt = new Date(task.createdAt);
+            task.dueAt = new Date(task.dueAt);
+            task.completedAt = task.completedAt ? new Date(task.completedAt) : undefined;
+            return task;
+          });
+        })
+      );
   }
 
   /**
