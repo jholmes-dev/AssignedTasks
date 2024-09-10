@@ -7,4 +7,5 @@ export interface CreateAssTaskView {
     priority: number;
     frequency: number;
     days?: number[];
+    startDate: Date;
 }

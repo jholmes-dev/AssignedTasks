@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
@@ -25,6 +26,7 @@ import { AssTaskService } from '../../../services/ass-task.service';
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatSliderModule,
+    MatDatepickerModule
   ],
   templateUrl: './create-task-modal.component.html',
   styleUrl: './create-task-modal.component.scss'
@@ -56,6 +58,9 @@ export class CreateTaskModalComponent {
       ]),
       days: new FormControl([], [
         this.daysRequiredIfRecurranceIsDays()
+      ]),
+      startDate: new FormControl(new Date(), [
+        Validators.required
       ])
     });
   }

@@ -90,23 +90,23 @@ namespace AssTasks.Server.Controllers
 
         // POST: api/TaskParents/CreateWithTask
         [HttpPost("CreateAndGenerateTask")]
-        public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(TaskParent taskParent)
+        public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(CreateAssTaskView createTaskView)
         {
             // Add timestamp to taskParent
-            taskParent.CreatedAt = DateTime.UtcNow;
+            createTaskView.CreatedAt = DateTime.UtcNow;
 
             // Create the task parent
-            _context.TaskParents.Add(taskParent);
+            _context.TaskParents.Add(createTaskView);
             await _context.SaveChangesAsync();
 
             // Generate a task from the parent
-            var generatedTask = _assTaskService.GenerateTaskFromParent(taskParent);
+            var generatedTask = _assTaskService.GenerateTaskFromParent(createTaskView as TaskParent, createTaskView.StartDate);
 
             // Save task
             _context.AssTasks.Add(generatedTask);
             await _context.SaveChangesAsync();
 
-            generatedTask.TaskParent = taskParent;
+            generatedTask.TaskParent = createTaskView;
 
             return Ok(generatedTask);
 

@@ -49,7 +49,7 @@ export class TaskComponent {
     } else if (this.isDueTomorrow(due)) {
       return "Due tomorrow";
     } else {
-      return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US', 'UTC')}`;
+      return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
     }
   }
 

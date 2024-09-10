@@ -19,10 +19,10 @@ namespace AssTasks.Server.Services
         /// <param name="parent">The parent to draw details from</param>
         /// <returns>A newly generated AssTask</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided parent.FrequencyType is not supported</exception>
-        public AssTask GenerateTaskFromParent(TaskParent parent) => parent.FrequencyType switch
+        public AssTask GenerateTaskFromParent(TaskParent parent, DateTime? startDate) => parent.FrequencyType switch
         {
-            TaskConstants.INTERVAL_TASK => GenerateIntervalTask(parent),
-            TaskConstants.DAYS_TASK => GenerateDaysTask(parent),
+            TaskConstants.INTERVAL_TASK => GenerateIntervalTask(parent, startDate),
+            TaskConstants.DAYS_TASK => GenerateDaysTask(parent, startDate),
             _ => throw new ArgumentOutOfRangeException($"ParentTask.FrequencyType value is not supported: {parent.FrequencyType}"),
         };
 
@@ -31,11 +31,12 @@ namespace AssTasks.Server.Services
         /// as to avoid timing issues when a task is completed early or late.
         /// </summary>
         /// <param name="parent">The task's parent to draw details from</param>
+        /// <param name="startDate">The start date of the task</param>
         /// <returns>A new interval based AssTask</returns>
-        public AssTask GenerateIntervalTask(TaskParent parent)
+        public AssTask GenerateIntervalTask(TaskParent parent, DateTime? startDate)
         {
-            // If no tasks exist, we generate one for today. Otherwise we generate one based off the parent's period
-            var dueDate = parent.AssTasks.Count == 0 ? DateTime.UtcNow : DateTime.UtcNow.AddDays(parent.Frequency);
+            // If startDate is provided, generate for that date. Otherwise we generate based off the parent's period
+            var dueDate = startDate ?? DateTime.UtcNow.AddDays(parent.Frequency);
 
             // Generate new AssTask
             var newTask = new AssTask
@@ -48,49 +49,35 @@ namespace AssTasks.Server.Services
             return newTask;
         }
 
-        public AssTask GenerateDaysTask(TaskParent parent)
+        public AssTask GenerateDaysTask(TaskParent parent, DateTime? startDate)
         {
-            // Get start date, and set it to the previous-most Sunday
-            var startDate = parent.CreatedAt.AddDays(-(int)parent.CreatedAt.DayOfWeek);
-
-            // Get today, and set to the previous-most Sunday
-            var taskDate = DateTime.UtcNow.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
-
-            // Current timestamp
-            var currentDateTime = DateTime.UtcNow;
-
-            // If there are no more upcoming task days this week, add a week to today
-            if (parent.Days != null && parent.Days.Last() < (int)currentDateTime.DayOfWeek)
+            if (parent.Days == null)
             {
-                taskDate = taskDate.AddDays(7);
+                throw new ArgumentNullException(nameof(parent));
             }
 
-            // Get number of weeks until the next active week
-            var weeks = (int)((taskDate - startDate).TotalDays / 7) % parent.Frequency;
-            weeks = weeks == 0 ? 0 : parent.Frequency - weeks;
+            var taskStartDate = startDate ?? DateTime.UtcNow;
 
-            // Add that number of days to today
-            taskDate = taskDate.AddDays(weeks * 7);
+            // Set target date to Sunday of task start date week
+            var targetDate = taskStartDate.AddDays(-(int)taskStartDate.DayOfWeek);
 
-            // Loop through days array, find next non-passed day
-            foreach (var day in parent.Days!) 
+            // If there are no more upcoming task days this week, add a period to the start date and take the first available day
+            // Otherwise take the next available day in the target week
+            if (parent.Days.Last() < (int)taskStartDate.DayOfWeek)
             {
-                // If our task date (which is the start of the next non-passed task week
-                // plus the days in the current iteration is greater than right now
-                // then we've found our next task date
-                if (taskDate.AddDays(day).Date >= currentDateTime.Date)
-                {
-                    taskDate = taskDate.AddDays(day);
-                    break;
-                }
+                targetDate = targetDate.AddDays((7 * parent.Frequency) + parent.Days.First());
+            }
+            else
+            {
+                targetDate = targetDate.AddDays(parent.Days.Where(day => day >= (int)taskStartDate.DayOfWeek).First());
             }
 
             // Create next AssTask
-            var newTask = new AssTask
+            var newTask = new AssTask 
             {
                 TaskParentId = parent.Id,
                 CreatedAt = DateTime.UtcNow,
-                DueAt = taskDate
+                DueAt = targetDate
             };
 
             return newTask;
