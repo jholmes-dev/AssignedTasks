@@ -1,11 +1,11 @@
 <mat-nav-list>
-    <mat-list-item (click)="signalCreateTask()">
+    <mat-list-item (click)="openCreateTaskModal()">
         <mat-icon matListItemIcon>add_task</mat-icon>
         <span matListItemTitle>Create Task</span>
         <span matListItemLine>Add a new task item</span>
     </mat-list-item>
     
-    <mat-list-item>
+    <mat-list-item (click)="openManageTasksModal()">
         <mat-icon matListItemIcon class="material-symbols-outlined">manufacturing</mat-icon>
         <span matListItemTitle>Manage Tasks</span>
         <span matListItemLine>Modify or delete existing tasks</span>

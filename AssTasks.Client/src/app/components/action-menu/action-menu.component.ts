@@ -20,8 +20,13 @@ export class ActionMenuComponent {
     private modalService: ModalService
   ) {}
 
-  signalCreateTask(): void {
+  openCreateTaskModal(): void {
     this.modalService.emitModalState(Modals.CREATE_TASK, true);
+    this.close();
+  }
+
+  openManageTasksModal(): void {
+    this.modalService.emitModalState(Modals.MANAGE_TASKS, true);
     this.close();
   }
 

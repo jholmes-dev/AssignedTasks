@@ -9,6 +9,9 @@ import {
     CompleteTaskModalComponent
 } from '../modals/complete-task-modal/complete-task-modal.component';
 import { CreateTaskModalComponent } from '../modals/create-task-modal/create-task-modal.component';
+import {
+    ManageTasksModalComponent
+} from '../modals/manage-tasks-modal/manage-tasks-modal.component';
 
 @Component({
   selector: 'app-modal-controller',
@@ -22,9 +25,11 @@ import { CreateTaskModalComponent } from '../modals/create-task-modal/create-tas
 export class ModalControllerComponent {
   readonly createTaskDialog = inject(MatDialog);
   readonly completeTaskDialog = inject(MatDialog);
+  readonly manageTasksDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
   completeTaskSub!: Subscription;
+  manageTasksSub!: Subscription;
 
   constructor(
     private modalService: ModalService
@@ -46,9 +51,18 @@ export class ModalControllerComponent {
         this.completeTaskDialog.open(CompleteTaskModalComponent);
       }
     });
+
+    // Add Manage Tasks Modal
+    this.manageTasksSub = this.modalService.getModalSubject(Modals.MANAGE_TASKS).subscribe((state: boolean) => {
+      if (state) {
+        this.manageTasksDialog.open(ManageTasksModalComponent);
+      }
+    });
   }
 
   ngOnDestroy() {
     this.createTaskSub.unsubscribe();
+    this.completeTaskSub.unsubscribe();
+    this.manageTasksSub.unsubscribe();
   }
 }
