@@ -6,8 +6,8 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 
-import { Task } from '../../../models/task';
-import { AssTaskService } from '../../../services/ass-task.service';
+import { TaskParent } from '../../../models/task-parent';
+import { AssTaskParentService } from '../../../services/ass-task-parent.service';
 
 @Component({
   selector: 'app-manage-tasks-modal',
@@ -24,19 +24,19 @@ import { AssTaskService } from '../../../services/ass-task.service';
   styleUrl: './manage-tasks-modal.component.scss'
 })
 export class ManageTasksModalComponent {
-  public assTasks: Task[] = [];
-  public displayedColumns: string[] = [ "created_at", "title", "active" ];
+  public assTaskParents: TaskParent[] = [];
+  public displayedColumns: string[] = [ "createdAt", "title", "active" ];
 
   constructor(
     private dialogReg: MatDialogRef<ManageTasksModalComponent>,
-    private assTaskService: AssTaskService
+    private assTaskParentService: AssTaskParentService
   ) {}
 
   ngOnInit(): void {
     // Load AssTasks
-    this.assTaskService.getTasks().subscribe({
-      next: (tasks: Task[]) => {
-        this.assTasks = tasks;
+    this.assTaskParentService.getTaskParents().subscribe({
+      next: (taskParents: TaskParent[]) => {
+        this.assTaskParents = taskParents;
       }
     });
   }

@@ -109,8 +109,6 @@ namespace AssTasks.Server.Controllers
             generatedTask.TaskParent = createTaskView;
 
             return Ok(generatedTask);
-
-            //return CreatedAtAction(nameof(PostTaskParentAndGenerateTask), new { id = generatedTask.Id }, generatedTask);
         }
 
         // DELETE: api/TaskParents/5

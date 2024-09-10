@@ -7,7 +7,7 @@ interface BaseTaskParent {
     active: boolean;
     priority: number;
     frequency: number;
-    created_at: Date;
+    createdAt: Date;
 }
 
 interface IntervalTaskParent extends BaseTaskParent {
