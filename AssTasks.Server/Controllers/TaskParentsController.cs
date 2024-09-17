@@ -121,7 +121,13 @@ namespace AssTasks.Server.Controllers
                 return NotFound();
             }
 
+            // Remove any related AssTasks
+            var relatedAssTasks = await _context.AssTasks.Where(at => at.TaskParentId == taskParent.Id).ToListAsync();
+            _context.AssTasks.RemoveRange(relatedAssTasks);
+
+            // Remove ParentTask
             _context.TaskParents.Remove(taskParent);
+
             await _context.SaveChangesAsync();
 
             return NoContent();

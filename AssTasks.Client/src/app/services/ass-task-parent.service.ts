@@ -55,4 +55,13 @@ export class AssTaskParentService {
         })
       );
   }
+
+  /**
+   * Deletes a TaskParent by id
+   * @param id 
+   * @returns an Observable that deletes the task for the given id
+   */
+  deleteTaskParent(id: number): Observable<void> {
+    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`);
+  }
 }

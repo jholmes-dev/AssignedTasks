@@ -9,6 +9,7 @@ var AllowedOriginsPolicy = "_allowFromAngularPort";
 
 // Add Services
 builder.Services.AddScoped<AssTaskService>();
+builder.Services.AddScoped<TaskParentService>();
 
 // Allow CORS from Angular port on localhost
 builder.Services.AddCors(options =>
