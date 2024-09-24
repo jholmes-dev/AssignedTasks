@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
+using AssTasks.Server.Repositories.Interfaces;
 
 namespace AssTasks.Server.Controllers
 {
@@ -14,10 +15,14 @@ namespace AssTasks.Server.Controllers
     public class AssTasksController : ControllerBase
     {
         private readonly AssTasksContext _context;
+        private readonly IAssTaskRepository assTaskRepository;
 
-        public AssTasksController(AssTasksContext context)
+        public AssTasksController(
+            AssTasksContext context,
+            IAssTaskRepository assTaskRepository)
         {
             _context = context;
+            this.assTaskRepository = assTaskRepository;
         }
 
         // GET: api/AssTasks
