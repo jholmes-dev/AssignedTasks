@@ -15,6 +15,7 @@ builder.Services.AddScoped<TaskParentService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAssTaskRepository, AssTaskRepository>();
+builder.Services.AddScoped<ITaskParentRepository, TaskParentRepository>();
 
 // Allow CORS from Angular port on localhost
 builder.Services.AddCors(options =>

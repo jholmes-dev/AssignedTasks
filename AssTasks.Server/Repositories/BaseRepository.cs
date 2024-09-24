@@ -74,6 +74,17 @@ namespace AssTasks.Server.Repositories
         }
 
         /// <summary>
+        /// Deletes an entity by Id
+        /// </summary>
+        /// <param name="id">The Id to delete by</param>
+        /// <returns></returns>
+        public virtual async Task DeleteByCriteriaAsync(Expression<Func<TEntity, bool>> deleteCriteria)
+        {
+            await dbSet.Where(deleteCriteria).ExecuteDeleteAsync();
+            await SaveAsync();
+        }
+
+        /// <summary>
         /// Retrieves an entity by primary key
         /// </summary>
         /// <param name="id">Primary key to search by</param>
