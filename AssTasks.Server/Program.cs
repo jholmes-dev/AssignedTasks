@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
 using AssTasks.Server.Services;
 using System.Text.Json.Serialization;
+using AssTasks.Server.Repositories.Interfaces;
+using AssTasks.Server.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -10,6 +12,9 @@ var AllowedOriginsPolicy = "_allowFromAngularPort";
 // Add Services
 builder.Services.AddScoped<AssTaskService>();
 builder.Services.AddScoped<TaskParentService>();
+
+// Add Repositories
+builder.Services.AddScoped<IAssTaskRepository, AssTaskRepository>();
 
 // Allow CORS from Angular port on localhost
 builder.Services.AddCors(options =>
