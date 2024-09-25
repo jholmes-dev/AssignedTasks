@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
-using AssTasks.Server.Services;
 using AssTasks.Server.Repositories.Interfaces;
+using AssTasks.Server.Services.Interfaces;
 
 namespace AssTasks.Server.Controllers
 {
@@ -15,12 +15,12 @@ namespace AssTasks.Server.Controllers
     [ApiController]
     public class TaskParentsController : ControllerBase
     {
-        private readonly AssTaskService assTaskService;
+        private readonly IAssTaskService assTaskService;
         private readonly ITaskParentRepository taskParentRepository;
         private readonly IAssTaskRepository assTaskRepository;
 
         public TaskParentsController(
-            AssTaskService assTaskService,
+            IAssTaskService assTaskService,
             ITaskParentRepository taskParentRepository,
             IAssTaskRepository assTaskRepository)
         {

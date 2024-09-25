@@ -4,14 +4,15 @@ using AssTasks.Server.Services;
 using System.Text.Json.Serialization;
 using AssTasks.Server.Repositories.Interfaces;
 using AssTasks.Server.Repositories;
+using AssTasks.Server.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
 var AllowedOriginsPolicy = "_allowFromAngularPort";
 
 // Add Services
-builder.Services.AddScoped<AssTaskService>();
-builder.Services.AddScoped<TaskParentService>();
+builder.Services.AddScoped<IAssTaskService, AssTaskService>();
+builder.Services.AddScoped<ITaskParentService, TaskParentService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAssTaskRepository, AssTaskRepository>();
