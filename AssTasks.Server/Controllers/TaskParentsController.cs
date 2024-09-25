@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
 using AssTasks.Server.Services;
+using AssTasks.Server.Repositories.Interfaces;
 
 namespace AssTasks.Server.Controllers
 {
@@ -14,81 +15,62 @@ namespace AssTasks.Server.Controllers
     [ApiController]
     public class TaskParentsController : ControllerBase
     {
-        private readonly AssTasksContext _context;
-        private readonly AssTaskService _assTaskService;
+        private readonly AssTaskService assTaskService;
+        private readonly ITaskParentRepository taskParentRepository;
+        private readonly IAssTaskRepository assTaskRepository;
 
         public TaskParentsController(
-            AssTasksContext context,
-            AssTaskService assTaskService
-        ) {
-            _context = context;
-            _assTaskService = assTaskService;
+            AssTaskService assTaskService,
+            ITaskParentRepository taskParentRepository,
+            IAssTaskRepository assTaskRepository)
+        {
+            this.assTaskService = assTaskService;
+            this.taskParentRepository = taskParentRepository;
+            this.assTaskRepository = assTaskRepository;
         }
 
-        // GET: api/TaskParents
+        /// <summary>
+        /// Retrieves all TaskParents
+        /// </summary>
+        /// <returns>A list of TaskParents</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskParent>>> GetTaskParents()
         {
-            return await _context.TaskParents.ToListAsync();
+            return Ok(
+                await taskParentRepository.GetAllAsync()
+            );
         }
 
-        // GET: api/TaskParents/5
+        /// <summary>
+        /// Retrieves a TaskParent by Id
+        /// </summary>
+        /// <param name="id">The Id to retrieve the TaskParent by</param>
+        /// <returns>The requested TaskParent</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskParent>> GetTaskParent(long id)
+        public async Task<ActionResult<TaskParent>> GetTaskParent(int id)
         {
-            var taskParent = await _context.TaskParents.FindAsync(id);
-
-            if (taskParent == null)
-            {
-                return NotFound();
-            }
-
-            return taskParent;
+            var taskParent = await taskParentRepository.GetByIdAsync(id);
+            return taskParent != null ? Ok(taskParent) : NotFound();
         }
 
-        // PUT: api/TaskParents/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaskParent(long id, TaskParent taskParent)
-        {
-            if (id != taskParent.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(taskParent).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TaskParentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/TaskParents
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+      
+        /// <summary>
+        /// Creates a TaskParent
+        /// </summary>
+        /// <param name="taskParent"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<TaskParent>> PostTaskParent(TaskParent taskParent)
         {
-            _context.TaskParents.Add(taskParent);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(PostTaskParent), new { id = taskParent.Id }, taskParent);
+            await taskParentRepository.AddAsync(taskParent);
+            return CreatedAtAction(nameof(GetTaskParent), new { id = taskParent.Id }, taskParent);
         }
 
-        // POST: api/TaskParents/CreateWithTask
+        /// <summary>
+        /// Creates a TaskParent and generates its AssTask along with it
+        /// </summary>
+        /// <param name="createTaskView"></param>
+        /// <returns></returns>
         [HttpPost("CreateAndGenerateTask")]
         public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(CreateAssTaskView createTaskView)
         {
@@ -96,46 +78,39 @@ namespace AssTasks.Server.Controllers
             createTaskView.CreatedAt = DateTime.UtcNow;
 
             // Create the task parent
-            _context.TaskParents.Add(createTaskView);
-            await _context.SaveChangesAsync();
+            await taskParentRepository.AddAsync(createTaskView);
 
             // Generate a task from the parent
-            var generatedTask = _assTaskService.GenerateTaskFromParent(createTaskView as TaskParent, createTaskView.StartDate);
+            var generatedTask = assTaskService.GenerateTaskFromParent(createTaskView as TaskParent, createTaskView.StartDate);
+            await assTaskRepository.AddAsync(generatedTask);
 
-            // Save task
-            _context.AssTasks.Add(generatedTask);
-            await _context.SaveChangesAsync();
-
+            // Return the generated task
             generatedTask.TaskParent = createTaskView;
-
             return Ok(generatedTask);
         }
 
-        // DELETE: api/TaskParents/5
+        /// <summary>
+        /// Deletes a TaskParent by Id
+        /// </summary>
+        /// <param name="id">The Id to delete by</param>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaskParent(long id)
+        public async Task<IActionResult> DeleteTaskParent(int id)
         {
-            var taskParent = await _context.TaskParents.FindAsync(id);
+            // Get TaskParent
+            var taskParent = await taskParentRepository.GetByIdAsync(id);
+      
             if (taskParent == null)
             {
                 return NotFound();
             }
 
             // Remove any related AssTasks
-            var relatedAssTasks = await _context.AssTasks.Where(at => at.TaskParentId == taskParent.Id).ToListAsync();
-            _context.AssTasks.RemoveRange(relatedAssTasks);
+            await assTaskRepository.DeleteByCriteriaAsync(at => at.TaskParentId == taskParent.Id);
 
             // Remove ParentTask
-            _context.TaskParents.Remove(taskParent);
-
-            await _context.SaveChangesAsync();
+            await taskParentRepository.DeleteByIdAsync(taskParent.Id);
 
             return NoContent();
-        }
-
-        private bool TaskParentExists(long id)
-        {
-            return _context.TaskParents.Any(e => e.Id == id);
         }
     }
 }
