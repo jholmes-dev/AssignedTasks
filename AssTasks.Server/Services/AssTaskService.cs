@@ -1,16 +1,18 @@
 ﻿using AssTasks.Server.Models;
 using AssTasks.Server.Constants;
+using AssTasks.Server.Services.Interfaces;
+using AssTasks.Server.Repositories.Interfaces;
 
 namespace AssTasks.Server.Services
 {
-    public class AssTaskService
+    public class AssTaskService : IAssTaskService
     {
-        private readonly AssTasksContext _context;
+        private readonly IAssTaskRepository assTaskRepository;
 
         public AssTaskService(
-            AssTasksContext context
-        ) {
-            _context = context;
+            IAssTaskRepository assTaskRepository)
+        {
+            this.assTaskRepository = assTaskRepository;
         }
 
         /// <summary>
