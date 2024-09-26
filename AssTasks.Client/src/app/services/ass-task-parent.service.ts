@@ -1,10 +1,11 @@
-import { map, Observable, Subject } from 'rxjs';
+import { map, Observable, Subject, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { APIConfig } from '../constants/api.constant';
 import { TaskParent } from '../models/task-parent';
+import { AssTaskService } from './ass-task.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class AssTaskParentService {
   private assTaskParentsUpdated = new Subject<boolean>();
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private assTaskService: AssTaskService
   ) { }
 
   /**
@@ -62,6 +64,14 @@ export class AssTaskParentService {
    * @returns an Observable that deletes the task for the given id
    */
   deleteTaskParent(id: number): Observable<void> {
-    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`);
+    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`)
+    .pipe(
+        tap({
+          next: () => {
+            this.emitAssTaskParentsUpdated();
+            this.assTaskService.emitAssTasksUpdated();
+          }
+        })
+      );
   }
 }
