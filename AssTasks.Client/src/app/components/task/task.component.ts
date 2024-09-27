@@ -3,7 +3,9 @@ import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+import { DaysAbbv } from '../../constants/days.constant';
 import { Modals } from '../../constants/modals.constant';
+import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
 import { ModalService } from '../../services/modal.service';
 
@@ -25,11 +27,11 @@ export class TaskComponent {
     private modalService: ModalService
   ) {}
 
-  openCompleteTaskDialog() {
+  public openCompleteTaskDialog() {
     this.modalService.emitModalState(Modals.COMPLETE_TASK, true);
   }
 
-  getDueClass(due: Date): string {
+  public getDueClass(due: Date): string {
     if (this.isOverdue(due)) {
       return "task-due-overdue";
     } else if (this.isDueToday(due)) {
@@ -41,7 +43,7 @@ export class TaskComponent {
     }
   }
 
-  getDueDateString(due: Date): string {
+  public getDueDateString(due: Date): string {
     if (this.isOverdue(due)) {
       return "Overdue";
     } else if (this.isDueToday(due)) {
@@ -52,8 +54,26 @@ export class TaskComponent {
       return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
     }
   }
+  
+  private getDaysString(daysArray: number[]): string {
+    return daysArray.map((day: number) => {
+      return DaysAbbv[day];
+    }).join(", ");
+  }
 
-  isOverdue(due: Date): boolean {
+  public getTaskIntervalString(task: Task): string {
+    switch (task.taskParent.frequencyType)
+    {
+      case TaskTypes.DAYS_TASK:
+        return this.getDaysString(task.taskParent.days) + ` every ${task.taskParent.frequency > 1 ? task.taskParent.frequency + " " : ""}week${task.taskParent.frequency > 1 ? "s" : ""}`;
+      case TaskTypes.INTERVAL_TASK:
+        return `Every ${task.taskParent.frequency > 1 ? task.taskParent.frequency + " " : ""}day${task.taskParent.frequency > 1 ? "s" : ""}`
+      default:
+        return "Task type not supported";
+    }
+  }
+
+  public isOverdue(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
@@ -61,7 +81,7 @@ export class TaskComponent {
     return dueDate < today;
   }
 
-  isDueToday(due: Date): boolean {
+  public isDueToday(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
@@ -69,7 +89,7 @@ export class TaskComponent {
     return dueDate.getTime() === today.getTime();
   }
 
-  isDueTomorrow(due: Date): boolean {
+  public isDueTomorrow(due: Date): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);

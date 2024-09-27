@@ -11,11 +11,11 @@ interface BaseTaskParent {
 }
 
 interface IntervalTaskParent extends BaseTaskParent {
-    type: TaskTypes.INTERVAL_TASK;
+    frequencyType: TaskTypes.INTERVAL_TASK;
 }
 
 interface DaysTaskParent extends BaseTaskParent {
-    type: TaskTypes.DAYS_TASK;
+    frequencyType: TaskTypes.DAYS_TASK;
     days: number[];
 }
 

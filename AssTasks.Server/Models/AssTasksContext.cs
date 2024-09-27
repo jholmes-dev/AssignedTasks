@@ -18,6 +18,10 @@ namespace AssTasks.Server.Models
                 .HasMany(e => e.AssTasks)
                 .WithOne(e => e.Owner)
                 .HasForeignKey(e => e.OwnerId);
+
+            modelBuilder.Entity<TaskParent>()
+                .Property(x => x.Active)
+                .HasDefaultValue(true);
         }
 
         public DbSet<TaskParent> TaskParents { get; set; } = null!;
