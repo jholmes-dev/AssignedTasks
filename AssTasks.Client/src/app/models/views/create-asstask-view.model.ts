@@ -8,4 +8,5 @@ export interface CreateAssTaskView {
     frequency: number;
     days?: number[];
     startDate: Date;
+    active: boolean;
 }

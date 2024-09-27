@@ -85,6 +85,7 @@ export class CreateTaskModalComponent {
 
     if (this.createTaskForm.valid) {
       const taskData: CreateAssTaskView = this.createTaskForm.value;
+      taskData.active = true;
       
       this.assTaskService
         .createTask(taskData)

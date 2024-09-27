@@ -36,9 +36,8 @@ namespace AssTasks.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskParent>>> GetTaskParents()
         {
-            return Ok(
-                await taskParentRepository.GetAllAsync()
-            );
+            var taskParents = await taskParentRepository.GetAllAsync();
+            return Ok(taskParents.OrderBy(x => x.Active).OrderBy(x => x.CreatedAt).OrderBy(x => x.Title));
         }
 
         /// <summary>
@@ -87,6 +86,27 @@ namespace AssTasks.Server.Controllers
             // Return the generated task
             generatedTask.TaskParent = createTaskView;
             return Ok(generatedTask);
+        }
+
+        /// <summary>
+        /// Toggles the Active property of a TaskParent by Id
+        /// </summary>
+        /// <param name="taskParentId">The TaskParent Id</param>
+        /// <returns></returns>
+        [HttpPost("{taskParentId:int}/ToggleTaskParentActive")]
+        public async Task<IActionResult> ToggleTaskParentStatus([FromRoute] int taskParentId)
+        {
+            var taskParent = await taskParentRepository.GetByIdAsync(taskParentId);
+
+            if (taskParent == null)
+            {
+                return NotFound();
+            }
+
+            taskParent.Active = !taskParent.Active;
+            await taskParentRepository.UpdateAsync(taskParent);
+
+            return NoContent();
         }
 
         /// <summary>

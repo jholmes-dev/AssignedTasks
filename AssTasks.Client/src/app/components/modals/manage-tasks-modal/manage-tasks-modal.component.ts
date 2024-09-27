@@ -8,6 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 
 import { TaskParent } from '../../../models/task-parent';
@@ -25,7 +26,8 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
     ReactiveFormsModule,
     MatTableModule,
     MatIcon,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSlideToggleModule
   ],
   templateUrl: './manage-tasks-modal.component.html',
   styleUrl: './manage-tasks-modal.component.scss'
@@ -99,14 +101,14 @@ export class ManageTasksModalComponent {
    * @param taskParent 
    */
   deleteTaskParent(taskParent: TaskParent) : void {
-    this.assTaskParentService.deleteTaskParent(taskParent.id)
-      .subscribe({
-        next: () => {
-          
-        },
-        error: () => {
+    this.assTaskParentService.deleteTaskParent(taskParent.id).subscribe();
+  }
 
-        }
-      })
+  /**
+   * Toggles TaskParent's Status
+   * @param id The Id of the parent to toggle
+   */
+  toggleTaskParentStatus(id: number) : void {
+    this.assTaskParentService.toggleTaskParentStatus(id).subscribe();
   }
 }

@@ -74,4 +74,20 @@ export class AssTaskParentService {
         })
       );
   }
+
+  /**
+   * Toggles a TaskParent's status by Id
+   * @param id The Id of the TaskParent to update
+   * @returns an Observable that toggle the TaskParent's status
+   */
+  toggleTaskParentStatus(id: number): Observable<void> {
+    return this.httpClient.post<void>(APIConfig.url + `TaskParents/${id}/ToggleTaskParentActive`, null)
+    .pipe(
+        tap({
+          next: () => {
+            this.assTaskService.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
 }
