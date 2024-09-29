@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
 using AssTasks.Server.Repositories.Interfaces;
 using AssTasks.Server.Services.Interfaces;
+using Microsoft.Build.Framework;
 
 namespace AssTasks.Server.Controllers
 {
@@ -103,6 +104,19 @@ namespace AssTasks.Server.Controllers
                 return NotFound();
             }
 
+            if (taskParent.Active)
+            { // Deactivate
+                // Delete any related AssTasks
+                await assTaskRepository.DeleteByCriteriaAsync(x => x.TaskParentId == taskParent.Id);
+            }
+            else
+            { // Activate
+                // Generate a new task
+                var generatedTask = assTaskService.GenerateTaskFromParent(taskParent);
+                await assTaskRepository.AddAsync(generatedTask);
+            }
+
+            // Toggle the parent
             taskParent.Active = !taskParent.Active;
             await taskParentRepository.UpdateAsync(taskParent);
 

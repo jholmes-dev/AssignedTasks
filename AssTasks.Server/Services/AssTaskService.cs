@@ -21,7 +21,7 @@ namespace AssTasks.Server.Services
         /// <param name="parent">The parent to draw details from</param>
         /// <returns>A newly generated AssTask</returns>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided parent.FrequencyType is not supported</exception>
-        public AssTask GenerateTaskFromParent(TaskParent parent, DateTime? startDate) => parent.FrequencyType switch
+        public AssTask GenerateTaskFromParent(TaskParent parent, DateTime? startDate = null) => parent.FrequencyType switch
         {
             TaskConstants.INTERVAL_TASK => GenerateIntervalTask(parent, startDate),
             TaskConstants.DAYS_TASK => GenerateDaysTask(parent, startDate),
