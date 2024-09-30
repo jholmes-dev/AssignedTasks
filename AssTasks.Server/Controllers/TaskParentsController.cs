@@ -74,6 +74,11 @@ namespace AssTasks.Server.Controllers
         [HttpPost("CreateAndGenerateTask")]
         public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(CreateAssTaskView createTaskView)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // Add timestamp to taskParent
             createTaskView.CreatedAt = DateTime.UtcNow;
 
@@ -119,6 +124,24 @@ namespace AssTasks.Server.Controllers
             // Toggle the parent
             taskParent.Active = !taskParent.Active;
             await taskParentRepository.UpdateAsync(taskParent);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates a TaskParent by Id
+        /// </summary>
+        /// <param name="taskParentId">The TaskParent Id</param>
+        /// <returns></returns>
+        [HttpPut("{taskParentId:int}")]
+        public async Task<IActionResult> UpdateTaskParent([FromRoute] int taskParentId, CreateAssTaskView updatedTaskParent)
+        {
+            if (updatedTaskParent == null)
+            {
+                return NotFound();
+            }
+
+            await taskParentRepository.UpdateAsync(updatedTaskParent);
 
             return NoContent();
         }

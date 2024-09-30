@@ -14,6 +14,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { TaskPriorities, TaskTypes } from '../../../constants/task.constants';
 import { TaskParent } from '../../../models/task-parent';
 import { CreateAssTaskView } from '../../../models/views/create-asstask-view.model';
+import { EditAssTaskView } from '../../../models/views/edit-asstask-view.model';
+import { AssTaskParentService } from '../../../services/ass-task-parent.service';
 import { AssTaskService } from '../../../services/ass-task.service';
 
 @Component({
@@ -42,6 +44,7 @@ export class CreateTaskModalComponent {
 
   constructor(
     private assTaskService: AssTaskService,
+    private taskParentService: AssTaskParentService,
     private dialogRef: MatDialogRef<CreateTaskModalComponent>
   ) {}
 
@@ -52,23 +55,23 @@ export class CreateTaskModalComponent {
     }
     
     this.createTaskForm = new FormGroup({
-      title: new FormControl(this.taskParent?.title ?? "", [
+      Title: new FormControl(this.taskParent?.title ?? "", [
         Validators.required,
       ]),
-      description: new FormControl(this.taskParent?.description ?? ""),
-      frequencyType: new FormControl(this.taskParent?.frequencyType ?? this.taskTypes.INTERVAL_TASK, [
+      Description: new FormControl(this.taskParent?.description ?? ""),
+      FrequencyType: new FormControl(this.taskParent?.frequencyType ?? this.taskTypes.INTERVAL_TASK, [
         Validators.required,
       ]),
-      priority: new FormControl(this.taskParent?.priority ?? this.taskPriorities.NORMAL, [
+      Priority: new FormControl(this.taskParent?.priority ?? this.taskPriorities.NORMAL, [
         Validators.required,
       ]),
-      frequency: new FormControl(this.taskParent?.frequency ?? '1', [
+      Frequency: new FormControl(this.taskParent?.frequency ?? '1', [
         Validators.required, 
       ]),
-      days: new FormControl(this.taskParent?.days ?? [], [
+      Days: new FormControl(this.taskParent?.days ?? [], [
         this.daysRequiredIfRecurranceIsDays()
       ]),
-      startDate: new FormControl(new Date(), [
+      StartDate: new FormControl(new Date(), [
         Validators.required
       ])
     });
@@ -92,18 +95,35 @@ export class CreateTaskModalComponent {
     // Reevaluate the days field
     this.createTaskForm.get('days')?.updateValueAndValidity();
 
-    if (this.createTaskForm.valid) {
+    if (!this.createTaskForm.valid) {
+      return;
+    }
+
+    if (this.isEdit && this.taskParent) {
+      const taskData: EditAssTaskView = this.createTaskForm.value;
+      taskData.Active = true;
+      taskData.Id = this.taskParent.id;
+      taskData.CreatedAt = this.taskParent.createdAt;
+        
+        this.taskParentService
+          .updateTaskParent(taskData)
+          .subscribe({
+            next: () => {
+            this.dialogRef.close();
+            }
+        });
+    } 
+    else {
       const taskData: CreateAssTaskView = this.createTaskForm.value;
-      taskData.active = true;
-      
-      this.assTaskService
-        .createTask(taskData)
-        .subscribe({
-          next: () => {
-           this.dialogRef.close();
-          }
-      });
+        taskData.Active = true;
+        
+        this.assTaskService
+          .createTask(taskData)
+          .subscribe({
+            next: () => {
+            this.dialogRef.close();
+            }
+        });
     }
   }
-
 }

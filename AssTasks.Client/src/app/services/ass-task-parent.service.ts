@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 
 import { APIConfig } from '../constants/api.constant';
 import { TaskParent } from '../models/task-parent';
+import { EditAssTaskView } from '../models/views/edit-asstask-view.model';
 import { AssTaskService } from './ass-task.service';
 
 @Injectable({
@@ -54,6 +55,18 @@ export class AssTaskParentService {
             taskParent.createdAt = new Date(taskParent.createdAt);
             return taskParent;
           });
+        })
+      );
+  }
+
+  updateTaskParent(taskParent: EditAssTaskView): Observable<void> {
+    return this.httpClient.put<void>(APIConfig.url + `TaskParents/${taskParent.Id}`, taskParent)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTaskParentsUpdated();
+            this.assTaskService.emitAssTasksUpdated();
+          }
         })
       );
   }
