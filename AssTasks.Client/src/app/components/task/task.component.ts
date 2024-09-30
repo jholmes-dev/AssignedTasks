@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { DaysAbbv } from '../../constants/days.constant';
-import { Modals } from '../../constants/modals.constant';
 import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
 import { ModalService } from '../../services/modal.service';
@@ -28,7 +27,7 @@ export class TaskComponent {
   ) {}
 
   public openCompleteTaskDialog() {
-    this.modalService.emitModalState(Modals.COMPLETE_TASK, true);
+    this.modalService.emitCompleteTaskModalState({ state: true });
   }
 
   public getDueClass(due: Date): string {

@@ -12,6 +12,7 @@ interface BaseTaskParent {
 
 interface IntervalTaskParent extends BaseTaskParent {
     frequencyType: TaskTypes.INTERVAL_TASK;
+    days: null;
 }
 
 interface DaysTaskParent extends BaseTaskParent {

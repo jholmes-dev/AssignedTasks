@@ -1,41 +1,44 @@
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { Modals } from '../constants/modals.constant';
+import { BaseModalData, CreateTaskModalData } from '../models/modal-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModalService {
-  private createTaskModalSubject = new Subject<boolean>();
-  private completeTaskModalSubject = new Subject<boolean>();
-  private manageTasksModalSubject = new Subject<boolean>();
+  private createTaskModalSubject = new Subject<CreateTaskModalData>();
+  private completeTaskModalSubject = new Subject<BaseModalData>();
+  private manageTasksModalSubject = new Subject<BaseModalData>();
 
-  emitModalState(name: Modals, state: boolean): void {
-    switch (name) {
-      case Modals.CREATE_TASK:
-        this.createTaskModalSubject.next(state);
-        break;
-      case Modals.COMPLETE_TASK:
-        this.completeTaskModalSubject.next(state);
-        break;
-      case Modals.MANAGE_TASKS:
-        this.manageTasksModalSubject.next(state);
-        break;
-    }
+  /**
+   * Create task modal functions
+   */
+  emitCreateTaskModalState(modalData: CreateTaskModalData): void {
+    this.createTaskModalSubject.next(modalData);
+  }
+  getCreateTaskModalSubject(): Observable<CreateTaskModalData> {
+    return this.createTaskModalSubject.asObservable();
   }
 
-  getModalSubject(name: Modals): Observable<boolean> {
-    switch (name) {
-      case Modals.CREATE_TASK:
-        return this.createTaskModalSubject.asObservable();
-      case Modals.COMPLETE_TASK:
-        return this.completeTaskModalSubject.asObservable();
-      case Modals.MANAGE_TASKS:
-        return this.manageTasksModalSubject.asObservable();
-      default:
-        return of(false);
-    }
+  /**
+   * Complete task modal functions
+   */
+  emitCompleteTaskModalState(modalData: BaseModalData): void {
+    this.completeTaskModalSubject.next(modalData);
+  }
+  getCompleteTaskModalSubject(): Observable<BaseModalData> {
+    return this.completeTaskModalSubject.asObservable();
+  }
+
+  /**
+   * Manage tasks modal functions
+   */
+  emitManageTasksModalState(modalData: BaseModalData): void {
+    this.manageTasksModalSubject.next(modalData);
+  }
+  getManageTasksModalSubject(): Observable<BaseModalData> {
+    return this.manageTasksModalSubject.asObservable();
   }
 }

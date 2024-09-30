@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Create a Task</h2>
+<h2 mat-dialog-title>{{ isEdit ? "Edit" : "Create" }} a Task</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="createTaskForm">
 
@@ -63,13 +63,13 @@
         
         <div *ngIf="this.createTaskForm.controls['frequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
             <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="days">
-                <mat-button-toggle value="0">Sun</mat-button-toggle>
-                <mat-button-toggle value="1">Mon</mat-button-toggle>
-                <mat-button-toggle value="2">Tue</mat-button-toggle>
-                <mat-button-toggle value="3">Wed</mat-button-toggle>
-                <mat-button-toggle value="4">Thu</mat-button-toggle>
-                <mat-button-toggle value="5">Fri</mat-button-toggle>
-                <mat-button-toggle value="6">Sat</mat-button-toggle>
+                <mat-button-toggle [value]="0">Sun</mat-button-toggle>
+                <mat-button-toggle [value]="1">Mon</mat-button-toggle>
+                <mat-button-toggle [value]="2">Tue</mat-button-toggle>
+                <mat-button-toggle [value]="3">Wed</mat-button-toggle>
+                <mat-button-toggle [value]="4">Thu</mat-button-toggle>
+                <mat-button-toggle [value]="5">Fri</mat-button-toggle>
+                <mat-button-toggle [value]="6">Sat</mat-button-toggle>
             </mat-button-toggle-group>
             @if (this.createTaskForm.controls['days'].hasError('daysRequired') && (this.createTaskForm.controls['days'].touched || this.createTaskForm.controls['days'].dirty)) {
                 <mat-error>Please select at least one day</mat-error>
@@ -81,5 +81,5 @@
 
 <mat-dialog-actions class="space-between">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button (click)="submit()">Create</button>
+    <button mat-flat-button (click)="submit()">{{ isEdit ? "Update" : "Create" }}</button>
 </mat-dialog-actions>

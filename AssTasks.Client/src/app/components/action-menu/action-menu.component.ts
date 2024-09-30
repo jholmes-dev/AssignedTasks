@@ -3,7 +3,6 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatIcon } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
-import { Modals } from '../../constants/modals.constant';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -21,12 +20,12 @@ export class ActionMenuComponent {
   ) {}
 
   openCreateTaskModal(): void {
-    this.modalService.emitModalState(Modals.CREATE_TASK, true);
+    this.modalService.emitCreateTaskModalState({ state: true, data: { taskParent: null }});
     this.close();
   }
 
   openManageTasksModal(): void {
-    this.modalService.emitModalState(Modals.MANAGE_TASKS, true);
+    this.modalService.emitManageTasksModalState({ state: true });
     this.close();
   }
 

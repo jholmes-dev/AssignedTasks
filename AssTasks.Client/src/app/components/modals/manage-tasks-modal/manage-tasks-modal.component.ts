@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 
 import { TaskParent } from '../../../models/task-parent';
 import { AssTaskParentService } from '../../../services/ass-task-parent.service';
+import { ModalService } from '../../../services/modal.service';
 import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-modal.component';
 
 @Component({
@@ -40,7 +41,8 @@ export class ManageTasksModalComponent {
   public loading: boolean = true;
 
   constructor(
-    private assTaskParentService: AssTaskParentService
+    private assTaskParentService: AssTaskParentService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +102,7 @@ export class ManageTasksModalComponent {
    * Sends a delete request for the given TaskParent
    * @param taskParent 
    */
-  deleteTaskParent(taskParent: TaskParent) : void {
+  deleteTaskParent(taskParent: TaskParent): void {
     this.assTaskParentService.deleteTaskParent(taskParent.id).subscribe();
   }
 
@@ -108,7 +110,19 @@ export class ManageTasksModalComponent {
    * Toggles TaskParent's Status
    * @param id The Id of the parent to toggle
    */
-  toggleTaskParentStatus(id: number) : void {
+  toggleTaskParentStatus(id: number): void {
     this.assTaskParentService.toggleTaskParentStatus(id).subscribe();
+  }
+
+  /**
+   * Opens edit modal for a TaskParent
+   */
+  openEditTaskParentModal(taskParent: TaskParent): void {
+    this.modalService.emitCreateTaskModalState({
+      state: true,
+      data: {
+        taskParent: taskParent
+      }
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
     AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn,
     Validators
@@ -7,11 +7,12 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 
 import { TaskPriorities, TaskTypes } from '../../../constants/task.constants';
+import { TaskParent } from '../../../models/task-parent';
 import { CreateAssTaskView } from '../../../models/views/create-asstask-view.model';
 import { AssTaskService } from '../../../services/ass-task.service';
 
@@ -32,6 +33,9 @@ import { AssTaskService } from '../../../services/ass-task.service';
   styleUrl: './create-task-modal.component.scss'
 })
 export class CreateTaskModalComponent {
+  modalData: { taskParent: TaskParent | null } = inject(MAT_DIALOG_DATA);
+  private taskParent: TaskParent | null = null;
+  public isEdit: boolean = false;
   public createTaskForm!: FormGroup; 
   public taskTypes = TaskTypes;
   public taskPriorities = TaskPriorities;
@@ -42,21 +46,26 @@ export class CreateTaskModalComponent {
   ) {}
 
   ngOnInit(): void {
+    if (this.modalData?.taskParent != null) {
+      this.isEdit = true;
+      this.taskParent = this.modalData.taskParent;
+    }
+    
     this.createTaskForm = new FormGroup({
-      title: new FormControl('', [
+      title: new FormControl(this.taskParent?.title ?? "", [
         Validators.required,
       ]),
-      description: new FormControl(''),
-      frequencyType: new FormControl(this.taskTypes.INTERVAL_TASK, [
+      description: new FormControl(this.taskParent?.description ?? ""),
+      frequencyType: new FormControl(this.taskParent?.frequencyType ?? this.taskTypes.INTERVAL_TASK, [
         Validators.required,
       ]),
-      priority: new FormControl(this.taskPriorities.NORMAL, [
+      priority: new FormControl(this.taskParent?.priority ?? this.taskPriorities.NORMAL, [
         Validators.required,
       ]),
-      frequency: new FormControl('1', [
-        Validators.required,
+      frequency: new FormControl(this.taskParent?.frequency ?? '1', [
+        Validators.required, 
       ]),
-      days: new FormControl([], [
+      days: new FormControl(this.taskParent?.days ?? [], [
         this.daysRequiredIfRecurranceIsDays()
       ]),
       startDate: new FormControl(new Date(), [
