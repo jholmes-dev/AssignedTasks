@@ -3,12 +3,14 @@ import { Subscription } from 'rxjs';
 import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { Modals } from '../../constants/modals.constant';
+import { BaseModalData, CreateTaskModalData } from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
     CompleteTaskModalComponent
 } from '../modals/complete-task-modal/complete-task-modal.component';
-import { CreateTaskModalComponent } from '../modals/create-task-modal/create-task-modal.component';
+import {
+    CreateEditTaskModalComponent
+} from '../modals/create-edit-task-modal/create-edit-task-modal.component';
 import {
     ManageTasksModalComponent
 } from '../modals/manage-tasks-modal/manage-tasks-modal.component';
@@ -36,25 +38,26 @@ export class ModalControllerComponent {
   ) {}
 
   ngOnInit() {
-    // Add Create Task Modal
-    this.createTaskSub = this.modalService.getModalSubject(Modals.CREATE_TASK).subscribe((state: boolean) => {
-      if (state) {
-        this.createTaskDialog.open(CreateTaskModalComponent, {
-          width: "700px"
+    // Register Create Task Modal
+    this.createTaskSub = this.modalService.getCreateTaskModalSubject().subscribe((modalData: CreateTaskModalData) => {
+      if (modalData.state) {
+        this.createTaskDialog.open(CreateEditTaskModalComponent, {
+          width: "700px",
+          data: modalData.data
         });
       }
     });
     
-    // Add Complete Task Modal
-    this.completeTaskSub = this.modalService.getModalSubject(Modals.COMPLETE_TASK).subscribe((state: boolean) => {
-      if (state) {
+    // Register Complete Task Modal
+    this.completeTaskSub = this.modalService.getCompleteTaskModalSubject().subscribe((modalData: BaseModalData) => {
+      if (modalData.state) {
         this.completeTaskDialog.open(CompleteTaskModalComponent);
       }
     });
 
-    // Add Manage Tasks Modal
-    this.manageTasksSub = this.modalService.getModalSubject(Modals.MANAGE_TASKS).subscribe((state: boolean) => {
-      if (state) {
+    // Register Manage Tasks Modal
+    this.manageTasksSub = this.modalService.getManageTasksModalSubject().subscribe((modalData: BaseModalData) => {
+      if (modalData.state) {
         this.manageTasksDialog.open(ManageTasksModalComponent);
       }
     });

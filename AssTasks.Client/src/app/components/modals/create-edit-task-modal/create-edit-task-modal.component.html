@@ -1,13 +1,13 @@
-<h2 mat-dialog-title>Create a Task</h2>
+<h2 mat-dialog-title>{{ isEdit ? "Edit" : "Create" }} a Task</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="createTaskForm">
 
         <div class="task-title-wrapper mb-3">
             <mat-form-field class="full-width-input">
                 <mat-label>Title</mat-label>
-                <input matInput formControlName="title">
+                <input matInput formControlName="Title">
 
-                @if (this.createTaskForm.controls['title'].hasError('required')) {
+                @if (this.createTaskForm.controls['Title'].hasError('required')) {
                     <mat-error>Title is required</mat-error>
                 }
             </mat-form-field>
@@ -16,7 +16,7 @@
         <div class="task-desc-wrapper mb-3">
             <mat-form-field class="full-width-input">
                 <mat-label>Description</mat-label>
-                <input matInput formControlName="description">
+                <input matInput formControlName="Description">
             </mat-form-field>
         </div>
         
@@ -24,7 +24,7 @@
 
             <div class="task-type-wrapper">
                 <p>Recurrance</p>
-                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="frequencyType">
+                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="FrequencyType">
                     <mat-button-toggle [value]="taskTypes.INTERVAL_TASK">Interval</mat-button-toggle>
                     <mat-button-toggle [value]="taskTypes.DAYS_TASK">Days</mat-button-toggle>
                 </mat-button-toggle-group>
@@ -32,7 +32,7 @@
             
             <div class="task-priority-wrapper">
                 <p>Priority</p>
-                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="priority">
+                <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="Priority">
                     <mat-button-toggle [value]="taskPriorities.LOW">Low</mat-button-toggle>
                     <mat-button-toggle [value]="taskPriorities.NORMAL">Normal</mat-button-toggle>
                     <mat-button-toggle [value]="taskPriorities.HIGH">High</mat-button-toggle>
@@ -44,16 +44,16 @@
         <div class="task-options">
 
             <div class="task-frequency mb-3">
-                <p>Recur every {{ this.createTaskForm.controls['frequency'].value }} {{ this.createTaskForm.controls['frequencyType'].value === taskTypes.INTERVAL_TASK ? "day" : "week" }}{{ this.createTaskForm.controls['frequency'].value == '1' ? "" : "s" }}</p>
+                <p>Recur every {{ this.createTaskForm.controls['Frequency'].value }} {{ this.createTaskForm.controls['FrequencyType'].value === taskTypes.INTERVAL_TASK ? "day" : "week" }}{{ this.createTaskForm.controls['Frequency'].value == '1' ? "" : "s" }}</p>
                 <mat-slider class="full-width-input-slider" min="1" max="60" step="1">
-                    <input matSliderThumb formControlName="frequency">
+                    <input matSliderThumb formControlName="Frequency">
                 </mat-slider>
             </div>
 
             <div class="task-start-wrapper">
                 <p>Start Date</p>
                 <mat-form-field>
-                    <input matInput [matDatepicker]="picker" formControlName="startDate">
+                    <input matInput [matDatepicker]="picker" formControlName="StartDate">
                     <mat-hint>MM/DD/YYYY</mat-hint>
                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
@@ -61,17 +61,17 @@
             </div>
         </div>
         
-        <div *ngIf="this.createTaskForm.controls['frequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
-            <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="days">
-                <mat-button-toggle value="0">Sun</mat-button-toggle>
-                <mat-button-toggle value="1">Mon</mat-button-toggle>
-                <mat-button-toggle value="2">Tue</mat-button-toggle>
-                <mat-button-toggle value="3">Wed</mat-button-toggle>
-                <mat-button-toggle value="4">Thu</mat-button-toggle>
-                <mat-button-toggle value="5">Fri</mat-button-toggle>
-                <mat-button-toggle value="6">Sat</mat-button-toggle>
+        <div *ngIf="this.createTaskForm.controls['FrequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
+            <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="Days">
+                <mat-button-toggle [value]="0">Sun</mat-button-toggle>
+                <mat-button-toggle [value]="1">Mon</mat-button-toggle>
+                <mat-button-toggle [value]="2">Tue</mat-button-toggle>
+                <mat-button-toggle [value]="3">Wed</mat-button-toggle>
+                <mat-button-toggle [value]="4">Thu</mat-button-toggle>
+                <mat-button-toggle [value]="5">Fri</mat-button-toggle>
+                <mat-button-toggle [value]="6">Sat</mat-button-toggle>
             </mat-button-toggle-group>
-            @if (this.createTaskForm.controls['days'].hasError('daysRequired') && (this.createTaskForm.controls['days'].touched || this.createTaskForm.controls['days'].dirty)) {
+            @if (this.createTaskForm.controls['Days'].hasError('daysRequired') && (this.createTaskForm.controls['Days'].touched || this.createTaskForm.controls['Days'].dirty)) {
                 <mat-error>Please select at least one day</mat-error>
             }
         </div> 
@@ -81,5 +81,5 @@
 
 <mat-dialog-actions class="space-between">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-flat-button (click)="submit()">Create</button>
+    <button mat-flat-button (click)="submit()">{{ isEdit ? "Update" : "Create" }}</button>
 </mat-dialog-actions>

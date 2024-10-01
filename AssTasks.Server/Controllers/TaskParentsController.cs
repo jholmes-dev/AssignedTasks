@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AssTasks.Server.Models;
 using AssTasks.Server.Repositories.Interfaces;
 using AssTasks.Server.Services.Interfaces;
+using Microsoft.Build.Framework;
 
 namespace AssTasks.Server.Controllers
 {
@@ -36,9 +37,8 @@ namespace AssTasks.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskParent>>> GetTaskParents()
         {
-            return Ok(
-                await taskParentRepository.GetAllAsync()
-            );
+            var taskParents = await taskParentRepository.GetAllAsync();
+            return Ok(taskParents.OrderBy(x => x.Active).OrderBy(x => x.CreatedAt).OrderBy(x => x.Title));
         }
 
         /// <summary>
@@ -74,6 +74,11 @@ namespace AssTasks.Server.Controllers
         [HttpPost("CreateAndGenerateTask")]
         public async Task<ActionResult<AssTask>> PostTaskParentAndGenerateTask(CreateAssTaskView createTaskView)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // Add timestamp to taskParent
             createTaskView.CreatedAt = DateTime.UtcNow;
 
@@ -87,6 +92,58 @@ namespace AssTasks.Server.Controllers
             // Return the generated task
             generatedTask.TaskParent = createTaskView;
             return Ok(generatedTask);
+        }
+
+        /// <summary>
+        /// Toggles the Active property of a TaskParent by Id
+        /// </summary>
+        /// <param name="taskParentId">The TaskParent Id</param>
+        /// <returns></returns>
+        [HttpPost("{taskParentId:int}/ToggleTaskParentActive")]
+        public async Task<IActionResult> ToggleTaskParentStatus([FromRoute] int taskParentId)
+        {
+            var taskParent = await taskParentRepository.GetByIdAsync(taskParentId);
+
+            if (taskParent == null)
+            {
+                return NotFound();
+            }
+
+            if (taskParent.Active)
+            { // Deactivate
+                // Delete any related AssTasks
+                await assTaskRepository.DeleteByCriteriaAsync(x => x.TaskParentId == taskParent.Id);
+            }
+            else
+            { // Activate
+                // Generate a new task
+                var generatedTask = assTaskService.GenerateTaskFromParent(taskParent);
+                await assTaskRepository.AddAsync(generatedTask);
+            }
+
+            // Toggle the parent
+            taskParent.Active = !taskParent.Active;
+            await taskParentRepository.UpdateAsync(taskParent);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates a TaskParent by Id
+        /// </summary>
+        /// <param name="taskParentId">The TaskParent Id</param>
+        /// <returns></returns>
+        [HttpPut("{taskParentId:int}")]
+        public async Task<IActionResult> UpdateTaskParent([FromRoute] int taskParentId, CreateAssTaskView updatedTaskParent)
+        {
+            if (updatedTaskParent == null)
+            {
+                return NotFound();
+            }
+
+            await taskParentRepository.UpdateAsync(updatedTaskParent);
+
+            return NoContent();
         }
 
         /// <summary>

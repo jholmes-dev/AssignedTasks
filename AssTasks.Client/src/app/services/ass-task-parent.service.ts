@@ -1,10 +1,12 @@
-import { map, Observable, Subject } from 'rxjs';
+import { map, Observable, Subject, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { APIConfig } from '../constants/api.constant';
 import { TaskParent } from '../models/task-parent';
+import { EditAssTaskView } from '../models/views/edit-asstask-view.model';
+import { AssTaskService } from './ass-task.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,8 @@ export class AssTaskParentService {
   private assTaskParentsUpdated = new Subject<boolean>();
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private assTaskService: AssTaskService
   ) { }
 
   /**
@@ -56,12 +59,48 @@ export class AssTaskParentService {
       );
   }
 
+  updateTaskParent(taskParent: EditAssTaskView): Observable<void> {
+    return this.httpClient.put<void>(APIConfig.url + `TaskParents/${taskParent.Id}`, taskParent)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTaskParentsUpdated();
+            this.assTaskService.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
+
   /**
    * Deletes a TaskParent by id
    * @param id 
    * @returns an Observable that deletes the task for the given id
    */
   deleteTaskParent(id: number): Observable<void> {
-    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`);
+    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`)
+    .pipe(
+        tap({
+          next: () => {
+            this.emitAssTaskParentsUpdated();
+            this.assTaskService.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
+
+  /**
+   * Toggles a TaskParent's status by Id
+   * @param id The Id of the TaskParent to update
+   * @returns an Observable that toggle the TaskParent's status
+   */
+  toggleTaskParentStatus(id: number): Observable<void> {
+    return this.httpClient.post<void>(APIConfig.url + `TaskParents/${id}/ToggleTaskParentActive`, null)
+    .pipe(
+        tap({
+          next: () => {
+            this.assTaskService.emitAssTasksUpdated();
+          }
+        })
+      );
   }
 }

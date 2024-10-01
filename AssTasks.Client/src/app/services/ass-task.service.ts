@@ -15,7 +15,7 @@ export class AssTaskService {
 
   constructor(
     private httpClient: HttpClient
-  ) { }
+  ) {}
 
   /**
    * Watcher method for receiving notifications that the task list has been updated
