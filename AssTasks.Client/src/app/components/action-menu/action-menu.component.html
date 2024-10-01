@@ -11,7 +11,7 @@
         <span matListItemLine>Modify or delete existing tasks</span>
     </mat-list-item>
 
-    <mat-list-item>
+    <mat-list-item (click)="openCreateEditUserModal()">
         <mat-icon matListItemIcon class="material-symbols-outlined">person_add</mat-icon>
         <span matListItemTitle>Create User</span>
         <span matListItemLine>Add a user to the task sheet</span>

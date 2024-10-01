@@ -24,6 +24,11 @@ export class ActionMenuComponent {
     this.close();
   }
 
+  openCreateEditUserModal(): void {
+    this.modalService.emitCreateEditUserModalState({ state: true });
+    this.close();
+  }
+
   openManageTasksModal(): void {
     this.modalService.emitManageTasksModalState({ state: true });
     this.close();

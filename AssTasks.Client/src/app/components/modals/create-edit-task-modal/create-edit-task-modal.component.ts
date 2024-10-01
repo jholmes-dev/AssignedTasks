@@ -109,7 +109,7 @@ export class CreateEditTaskModalComponent {
           .updateTaskParent(taskData)
           .subscribe({
             next: () => {
-            this.dialogRef.close();
+              this.dialogRef.close();
             }
         });
     } 
@@ -121,7 +121,7 @@ export class CreateEditTaskModalComponent {
           .createTask(taskData)
           .subscribe({
             next: () => {
-            this.dialogRef.close();
+              this.dialogRef.close();
             }
         });
     }

@@ -12,6 +12,9 @@ import {
     CreateEditTaskModalComponent
 } from '../modals/create-edit-task-modal/create-edit-task-modal.component';
 import {
+    CreateEditUserModalComponent
+} from '../modals/create-edit-user-modal/create-edit-user-modal.component';
+import {
     ManageTasksModalComponent
 } from '../modals/manage-tasks-modal/manage-tasks-modal.component';
 
@@ -26,10 +29,12 @@ import {
 })
 export class ModalControllerComponent {
   readonly createTaskDialog = inject(MatDialog);
+  readonly createEditUserDialog = inject(MatDialog);
   readonly completeTaskDialog = inject(MatDialog);
   readonly manageTasksDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
+  createEditUserSub!: Subscription;
   completeTaskSub!: Subscription;
   manageTasksSub!: Subscription;
 
@@ -45,6 +50,13 @@ export class ModalControllerComponent {
           width: "700px",
           data: modalData.data
         });
+      }
+    });
+
+    // Register Create Edit User Modal
+    this.createEditUserSub = this.modalService.getCreateEditUserModalSubject().subscribe((modalData: BaseModalData) => {
+      if (modalData.state) {
+        this.createTaskDialog.open(CreateEditUserModalComponent);
       }
     });
     
@@ -65,6 +77,7 @@ export class ModalControllerComponent {
 
   ngOnDestroy() {
     this.createTaskSub.unsubscribe();
+    this.createEditUserSub.unsubscribe();
     this.completeTaskSub.unsubscribe();
     this.manageTasksSub.unsubscribe();
   }

@@ -9,6 +9,7 @@ import { BaseModalData, CreateTaskModalData } from '../models/modal-data';
 })
 export class ModalService {
   private createTaskModalSubject = new Subject<CreateTaskModalData>();
+  private createEditUserModalSubject = new Subject<BaseModalData>();
   private completeTaskModalSubject = new Subject<BaseModalData>();
   private manageTasksModalSubject = new Subject<BaseModalData>();
 
@@ -20,6 +21,16 @@ export class ModalService {
   }
   getCreateTaskModalSubject(): Observable<CreateTaskModalData> {
     return this.createTaskModalSubject.asObservable();
+  }
+
+  /**
+   * Create User modal functions
+   */
+  emitCreateEditUserModalState(modalData: BaseModalData): void {
+    this.createEditUserModalSubject.next(modalData);
+  }
+  getCreateEditUserModalSubject(): Observable<BaseModalData> {
+    return this.createEditUserModalSubject.asObservable();
   }
 
   /**
