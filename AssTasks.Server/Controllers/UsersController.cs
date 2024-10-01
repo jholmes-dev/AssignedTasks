@@ -18,11 +18,23 @@ namespace AssTasks.Server.Controllers
         }
 
         /// <summary>
+        /// Retrieves all users
+        /// </summary>
+        /// <returns>A list of user objects</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            return Ok(
+                await userRepository.GetAllAsync()
+            );
+        }
+
+        /// <summary>
         /// Creates a user
         /// </summary>
         /// <param name="user">The user to create</param>
         /// <returns>The created user</returns>
-        [HttpPost("")]
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             await this.userRepository.AddAsync(user);
