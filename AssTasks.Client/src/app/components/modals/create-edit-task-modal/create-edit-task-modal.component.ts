@@ -19,7 +19,7 @@ import { AssTaskParentService } from '../../../services/ass-task-parent.service'
 import { AssTaskService } from '../../../services/ass-task.service';
 
 @Component({
-  selector: 'app-create-task-modal',
+  selector: 'app-create-edit-task-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -31,10 +31,10 @@ import { AssTaskService } from '../../../services/ass-task.service';
     MatSliderModule,
     MatDatepickerModule
   ],
-  templateUrl: './create-task-modal.component.html',
-  styleUrl: './create-task-modal.component.scss'
+  templateUrl: './create-edit-task-modal.component.html',
+  styleUrl: './create-edit-task-modal.component.scss'
 })
-export class CreateTaskModalComponent {
+export class CreateEditTaskModalComponent {
   modalData: { taskParent: TaskParent | null } = inject(MAT_DIALOG_DATA);
   private taskParent: TaskParent | null = null;
   public isEdit: boolean = false;
@@ -45,7 +45,7 @@ export class CreateTaskModalComponent {
   constructor(
     private assTaskService: AssTaskService,
     private taskParentService: AssTaskParentService,
-    private dialogRef: MatDialogRef<CreateTaskModalComponent>
+    private dialogRef: MatDialogRef<CreateEditTaskModalComponent>
   ) {}
 
   ngOnInit(): void {

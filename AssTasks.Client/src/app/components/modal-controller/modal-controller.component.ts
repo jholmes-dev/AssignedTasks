@@ -8,7 +8,9 @@ import { ModalService } from '../../services/modal.service';
 import {
     CompleteTaskModalComponent
 } from '../modals/complete-task-modal/complete-task-modal.component';
-import { CreateTaskModalComponent } from '../modals/create-task-modal/create-task-modal.component';
+import {
+    CreateEditTaskModalComponent
+} from '../modals/create-edit-task-modal/create-edit-task-modal.component';
 import {
     ManageTasksModalComponent
 } from '../modals/manage-tasks-modal/manage-tasks-modal.component';
@@ -39,7 +41,7 @@ export class ModalControllerComponent {
     // Register Create Task Modal
     this.createTaskSub = this.modalService.getCreateTaskModalSubject().subscribe((modalData: CreateTaskModalData) => {
       if (modalData.state) {
-        this.createTaskDialog.open(CreateTaskModalComponent, {
+        this.createTaskDialog.open(CreateEditTaskModalComponent, {
           width: "700px",
           data: modalData.data
         });
