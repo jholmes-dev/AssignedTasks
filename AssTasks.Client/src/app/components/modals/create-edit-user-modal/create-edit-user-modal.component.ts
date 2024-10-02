@@ -42,7 +42,7 @@ export class CreateEditUserModalComponent {
     }
 
     this.createUserForm = new FormGroup({
-      Name: new FormControl(this.user?.Name ?? "", [
+      Name: new FormControl(this.user?.name ?? "", [
           Validators.required
       ]),
     });

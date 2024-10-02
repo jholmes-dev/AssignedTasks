@@ -17,7 +17,7 @@
         <span matListItemLine>Add a user to the task sheet</span>
     </mat-list-item>
 
-    <mat-list-item>
+    <mat-list-item (click)="openManageUserModal()">
         <mat-icon matListItemIcon class="material-symbols-outlined">manage_accounts</mat-icon>
         <span matListItemTitle>Manage Users</span>
         <span matListItemLine>Modify or delete existing users</span>

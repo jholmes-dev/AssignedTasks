@@ -1,4 +1,5 @@
 ﻿using AssTasks.Server.Models;
+using AssTasks.Server.Repositories;
 using AssTasks.Server.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,17 @@ namespace AssTasks.Server.Controllers
         {
             await this.userRepository.AddAsync(user);
             return Ok(user);
+        }
+
+        /// <summary>
+        /// Delete a User by Id
+        /// </summary>
+        /// <param name="id">The User Id to delete by</param>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            await userRepository.DeleteByIdAsync(id);
+            return NoContent();
         }
     }
 }

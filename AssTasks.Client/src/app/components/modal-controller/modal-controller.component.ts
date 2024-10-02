@@ -3,7 +3,9 @@ import { Subscription } from 'rxjs';
 import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { BaseModalData, CreateTaskModalData } from '../../models/modal-data';
+import {
+    BaseModalData, CreateEditUserModalData, CreateTaskModalData
+} from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
     CompleteTaskModalComponent
@@ -17,6 +19,9 @@ import {
 import {
     ManageTasksModalComponent
 } from '../modals/manage-tasks-modal/manage-tasks-modal.component';
+import {
+    ManageUsersModalComponent
+} from '../modals/manage-users-modal/manage-users-modal.component';
 
 @Component({
   selector: 'app-modal-controller',
@@ -32,11 +37,13 @@ export class ModalControllerComponent {
   readonly createEditUserDialog = inject(MatDialog);
   readonly completeTaskDialog = inject(MatDialog);
   readonly manageTasksDialog = inject(MatDialog);
+  readonly manageUsersDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
   createEditUserSub!: Subscription;
   completeTaskSub!: Subscription;
   manageTasksSub!: Subscription;
+  manageUsersSub!: Subscription;
 
   constructor(
     private modalService: ModalService
@@ -54,9 +61,11 @@ export class ModalControllerComponent {
     });
 
     // Register Create Edit User Modal
-    this.createEditUserSub = this.modalService.getCreateEditUserModalSubject().subscribe((modalData: BaseModalData) => {
+    this.createEditUserSub = this.modalService.getCreateEditUserModalSubject().subscribe((modalData: CreateEditUserModalData) => {
       if (modalData.state) {
-        this.createTaskDialog.open(CreateEditUserModalComponent);
+        this.createTaskDialog.open(CreateEditUserModalComponent, {
+          data: modalData.data
+        });
       }
     });
     
@@ -73,6 +82,13 @@ export class ModalControllerComponent {
         this.manageTasksDialog.open(ManageTasksModalComponent);
       }
     });
+
+    // Register Users Modal
+    this.manageUsersSub = this.modalService.getManageUsersModalSubject().subscribe((modalData: BaseModalData) => {
+      if (modalData.state) {
+        this.manageUsersDialog.open(ManageUsersModalComponent);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -80,5 +96,6 @@ export class ModalControllerComponent {
     this.createEditUserSub.unsubscribe();
     this.completeTaskSub.unsubscribe();
     this.manageTasksSub.unsubscribe();
+    this.manageUsersSub.unsubscribe();
   }
 }
