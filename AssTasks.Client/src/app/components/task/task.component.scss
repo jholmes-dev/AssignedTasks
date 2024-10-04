@@ -33,19 +33,18 @@
         }
     }
     .task-icon {
-        line-height: 0;
-        align-self: flex-start;
-
-        .mat-icon {
-            font-size: 3rem;
-            height: 3rem;
-            width: 3rem;
-        }
+        align-self: stretch;
+        background-color: var(--task-upcoming);
+        border-radius: .5rem 0 0 .5rem;
+        display: flex;
+        align-items: center;
 
         .task-icon-inner {
-            padding: .5rem;
-            border-radius: .5rem;
-            background-color: var(--task-upcoming);
+            padding: 1.25rem .5rem;
+            width: 40px;
+            text-align: center;
+            font-size: 32px;
+            font-family:'Times New Roman', Times, serif
         }
     }
     .task-content {

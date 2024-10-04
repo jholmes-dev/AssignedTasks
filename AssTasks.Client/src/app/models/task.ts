@@ -6,7 +6,6 @@ export interface Task {
     completedAt?: Date;
     dueAt: Date;
     completedBy?: number;
-
+    ownerId?: number;
     taskParent: TaskParent;
-    // owner?: User; // TODO: This will be User model
 }

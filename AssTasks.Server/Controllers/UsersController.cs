@@ -43,6 +43,24 @@ namespace AssTasks.Server.Controllers
         }
 
         /// <summary>
+        /// Updates a User by Id
+        /// </summary>
+        /// <param name="userId">The Id of the User to update</param>
+        /// <param name="updatedUser">The update model for the User</param>
+        [HttpPut("{userId:int}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] int userId, User updatedUser)
+        {
+            if (updatedUser == null)
+            {
+                return NotFound();
+            }
+
+            await userRepository.UpdateAsync(updatedUser);
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Delete a User by Id
         /// </summary>
         /// <param name="id">The User Id to delete by</param>

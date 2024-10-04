@@ -6,17 +6,22 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatOption } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 
 import { TaskPriorities, TaskTypes } from '../../../constants/task.constants';
 import { TaskParent } from '../../../models/task-parent';
+import { User } from '../../../models/user';
 import { CreateAssTaskView } from '../../../models/views/create-asstask-view.model';
 import { EditAssTaskView } from '../../../models/views/edit-asstask-view.model';
 import { AssTaskParentService } from '../../../services/ass-task-parent.service';
 import { AssTaskService } from '../../../services/ass-task.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-create-edit-task-modal',
@@ -29,7 +34,10 @@ import { AssTaskService } from '../../../services/ass-task.service';
     ReactiveFormsModule,
     MatButtonToggleModule,
     MatSliderModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatOption,
+    MatSelectModule,
+    MatFormFieldModule
   ],
   templateUrl: './create-edit-task-modal.component.html',
   styleUrl: './create-edit-task-modal.component.scss'
@@ -37,14 +45,16 @@ import { AssTaskService } from '../../../services/ass-task.service';
 export class CreateEditTaskModalComponent {
   modalData: { taskParent: TaskParent | null } = inject(MAT_DIALOG_DATA);
   private taskParent: TaskParent | null = null;
+  public users: User[] = [];
   public isEdit: boolean = false;
-  public createTaskForm!: FormGroup; 
+  public createTaskForm: FormGroup = new FormGroup({}); 
   public taskTypes = TaskTypes;
   public taskPriorities = TaskPriorities;
 
   constructor(
     private assTaskService: AssTaskService,
     private taskParentService: AssTaskParentService,
+    private userService: UserService,
     private dialogRef: MatDialogRef<CreateEditTaskModalComponent>
   ) {}
 
@@ -53,7 +63,17 @@ export class CreateEditTaskModalComponent {
       this.isEdit = true;
       this.taskParent = this.modalData.taskParent;
     }
-    
+
+    this.initForm();
+
+    this.userService.getUsers().subscribe({
+      next: (users: User[]) => {
+        this.users = users;
+      }
+    });
+  }
+
+  private initForm(): void {
     this.createTaskForm = new FormGroup({
       Title: new FormControl(this.taskParent?.title ?? "", [
         Validators.required,
@@ -72,6 +92,9 @@ export class CreateEditTaskModalComponent {
         this.daysRequiredIfRecurranceIsDays()
       ]),
       StartDate: new FormControl(new Date(), [
+        Validators.required
+      ]),
+      OwnerId: new FormControl(null, [
         Validators.required
       ])
     });

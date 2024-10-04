@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DaysAbbv } from '../../constants/days.constant';
 import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
+import { User } from '../../models/user';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -21,10 +22,16 @@ import { ModalService } from '../../services/modal.service';
 })
 export class TaskComponent {
   @Input() task!: Task;
+  @Input() users: User[] = [];
+  public taskOwner: User | undefined;
 
   constructor(
     private modalService: ModalService
   ) {}
+
+  ngOnChanges(): void {
+    this.taskOwner = this.users.find((user) => user.id == this.task.ownerId)
+  }
 
   public openCompleteTaskDialog() {
     this.modalService.emitCompleteTaskModalState({ state: true });

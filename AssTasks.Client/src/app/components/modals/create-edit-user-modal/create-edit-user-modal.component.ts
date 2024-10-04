@@ -54,11 +54,18 @@ export class CreateEditUserModalComponent {
     }
 
     this.saving = true;
+    const userData: User = this.createUserForm.value;
 
     if (this.isEdit) {
-      //
+      userData.id = this.user?.id;
+      this.userService.updateUser(userData)
+        .pipe(
+          finalize(() => {
+            this.saving = false;
+            this.diaglogRef.close();
+          })
+        ).subscribe();
     } else {
-      const userData: User = this.createUserForm.value;
       this.userService.createUser(userData)
         .pipe(
           finalize(() => {

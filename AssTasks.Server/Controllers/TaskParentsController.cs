@@ -87,6 +87,7 @@ namespace AssTasks.Server.Controllers
 
             // Generate a task from the parent
             var generatedTask = assTaskService.GenerateTaskFromParent(createTaskView as TaskParent, createTaskView.StartDate);
+            generatedTask.OwnerId = createTaskView.OwnerId;
             await assTaskRepository.AddAsync(generatedTask);
 
             // Return the generated task

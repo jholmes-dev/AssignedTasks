@@ -48,6 +48,17 @@ export class UserService {
     return this.httpClient.get<User[]>(APIConfig.url + "Users");
   }
 
+  public updateUser(user: User): Observable<void> {
+    return this.httpClient.put<void>(APIConfig.url + `Users/${user.id}`, user)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitUsersUpdated();
+          }
+        })
+      );
+  }
+
   /**
    * Deletes a User
    * @param user The User to delete
