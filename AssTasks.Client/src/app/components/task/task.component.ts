@@ -50,11 +50,12 @@ export class TaskComponent {
   }
 
   public getDueDateString(due: Date): string {
-    if (this.isOverdue(due)) {
-      return "Overdue";
-    } else if (this.isDueToday(due)) {
+    const daysUntilDue = this.getDaysUntilDue(due);
+    if (daysUntilDue < 0) {
+      return `${Math.abs(daysUntilDue)} Day${daysUntilDue === -1 ? '' : 's'} Overdue`;
+    } else if (daysUntilDue === 0) {
       return "Due today";
-    } else if (this.isDueTomorrow(due)) {
+    } else if (daysUntilDue === 1) {
       return "Due tomorrow";
     } else {
       return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
@@ -85,6 +86,14 @@ export class TaskComponent {
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
     return dueDate < today;
+  }
+
+  public getDaysUntilDue(due: Date): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueDate = new Date(due);
+    dueDate.setHours(0, 0, 0, 0);
+    return (dueDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24;;
   }
 
   public isDueToday(due: Date): boolean {
