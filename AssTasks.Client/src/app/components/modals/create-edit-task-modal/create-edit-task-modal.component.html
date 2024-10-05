@@ -41,26 +41,17 @@
             
         </div>
         
-        <div class="task-options">
+        <div class="task-options mb-3">
 
-            <div class="task-frequency mb-3">
+            <div class="task-frequency">
                 <p>Recur every {{ this.createTaskForm.controls['Frequency'].value }} {{ this.createTaskForm.controls['FrequencyType'].value === taskTypes.INTERVAL_TASK ? "day" : "week" }}{{ this.createTaskForm.controls['Frequency'].value == '1' ? "" : "s" }}</p>
                 <mat-slider class="full-width-input-slider" min="1" max="60" step="1">
                     <input matSliderThumb formControlName="Frequency">
                 </mat-slider>
             </div>
 
-            <div class="task-start-wrapper">
-                <p>Start Date</p>
-                <mat-form-field>
-                    <input matInput [matDatepicker]="picker" formControlName="StartDate">
-                    <mat-hint>MM/DD/YYYY</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            </div>
         </div>
-        
+
         <div *ngIf="this.createTaskForm.controls['FrequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
             <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="Days">
                 <mat-button-toggle [value]="0">Sun</mat-button-toggle>
@@ -75,6 +66,32 @@
                 <mat-error>Please select at least one day</mat-error>
             }
         </div> 
+
+        <div class="task-options">
+
+            <div class="task-start-wrapper mb-3">
+                <mat-form-field>
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="StartDate">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <div class="task-start-wrapper mb-3">
+                <mat-form-field *ngIf="!isEdit">
+                    <mat-label>Assign To</mat-label>
+                    <mat-select formControlName="OwnerId">
+                        @for (user of users; track user) {
+                            <mat-option [value]="user.id">{{user.name}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+
+        </div>
 
     </form>
 </mat-dialog-content>

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DaysAbbv } from '../../constants/days.constant';
 import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
+import { User } from '../../models/user';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -21,13 +22,19 @@ import { ModalService } from '../../services/modal.service';
 })
 export class TaskComponent {
   @Input() task!: Task;
+  @Input() users: User[] = [];
+  public taskOwner: User | undefined;
 
   constructor(
     private modalService: ModalService
   ) {}
 
+  ngOnChanges(): void {
+    this.taskOwner = this.users.find((user) => user.id == this.task.ownerId)
+  }
+
   public openCompleteTaskDialog() {
-    this.modalService.emitCompleteTaskModalState({ state: true });
+    this.modalService.emitCompleteTaskModalState({ state: true, data: { task: this.task } });
   }
 
   public getDueClass(due: Date): string {
@@ -43,11 +50,12 @@ export class TaskComponent {
   }
 
   public getDueDateString(due: Date): string {
-    if (this.isOverdue(due)) {
-      return "Overdue";
-    } else if (this.isDueToday(due)) {
+    const daysUntilDue = this.getDaysUntilDue(due);
+    if (daysUntilDue < 0) {
+      return `${Math.abs(daysUntilDue)} Day${daysUntilDue === -1 ? '' : 's'} Overdue`;
+    } else if (daysUntilDue === 0) {
       return "Due today";
-    } else if (this.isDueTomorrow(due)) {
+    } else if (daysUntilDue === 1) {
       return "Due tomorrow";
     } else {
       return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
@@ -78,6 +86,14 @@ export class TaskComponent {
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
     return dueDate < today;
+  }
+
+  public getDaysUntilDue(due: Date): number {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueDate = new Date(due);
+    dueDate.setHours(0, 0, 0, 0);
+    return (dueDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24;;
   }
 
   public isDueToday(due: Date): boolean {

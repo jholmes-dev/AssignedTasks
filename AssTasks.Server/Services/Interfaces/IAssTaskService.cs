@@ -7,5 +7,6 @@ namespace AssTasks.Server.Services.Interfaces
         AssTask GenerateTaskFromParent(TaskParent parent, DateTime? startDate = null);
         AssTask GenerateIntervalTask(TaskParent parent, DateTime? startDate);
         AssTask GenerateDaysTask(TaskParent parent, DateTime? startDate);
+        Task<AssTask> CompleteAndGenerateNewTask(int taskId, DateTime? startDate);
     }
 }

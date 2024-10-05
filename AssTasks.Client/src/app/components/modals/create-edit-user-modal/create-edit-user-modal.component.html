@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{ isEdit ? "Edit" : "Create" }} a User</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="createUserForm">
+
+        <div class="task-title-wrapper mb-3">
+            <mat-form-field class="full-width-input">
+                <mat-label>User's Name</mat-label>
+                <input matInput formControlName="Name">
+
+                @if (this.createUserForm.controls['Name'].hasError('required')) {
+                    <mat-error>Name is required</mat-error>
+                }
+            </mat-form-field>
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="space-between">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button (click)="submit()" [disabled]="saving">{{ isEdit ? "Update" : "Create" }}</button>
+</mat-dialog-actions>

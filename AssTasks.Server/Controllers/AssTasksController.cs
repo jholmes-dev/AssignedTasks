@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AssTasks.Server.Models;
 using AssTasks.Server.Repositories.Interfaces;
+using AssTasks.Server.Services.Interfaces;
 
 namespace AssTasks.Server.Controllers
 {
@@ -9,22 +10,25 @@ namespace AssTasks.Server.Controllers
     public class AssTasksController : ControllerBase
     {
         private readonly IAssTaskRepository assTaskRepository;
+        private readonly IAssTaskService assTaskService;
 
         public AssTasksController(
-            IAssTaskRepository assTaskRepository)
+            IAssTaskRepository assTaskRepository,
+            IAssTaskService assTaskService)
         {
             this.assTaskRepository = assTaskRepository;
+            this.assTaskService = assTaskService;
         }
 
         /// <summary>
-        /// Returns all AssTasks with their related parent
+        /// Returns all non-completed AssTasks with their related parent
         /// </summary>
         /// <returns>A collection of AssTasks</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AssTask>>> GetAssTasks()
         {
             return Ok(
-                await assTaskRepository.GetAsync(null, x => x.OrderBy(y => y.DueAt), "TaskParent")
+                await assTaskRepository.GetAsync(x => x.CompletedAt == null, x => x.OrderBy(y => y.DueAt), "TaskParent")
             );
         }
 
@@ -45,18 +49,23 @@ namespace AssTasks.Server.Controllers
         /// </summary>
         /// <param name="id">The Id to delete by</param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAssTask(int id)
         {
             await assTaskRepository.DeleteByIdAsync(id);
             return NoContent();
         }
 
-        [HttpPost("{id}/complete")]
-        public async Task<IActionResult> CompleteAssTask(int id)
+        /// <summary>
+        /// Completes an AssTask and generates the next for the series
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="startDate"></param>
+        /// <returns></returns>
+        [HttpPost("{taskId:int}/Complete")]
+        public async Task<IActionResult> CompleteAssTask(int taskId, DateTime? startDate)
         {
-            // TODO: Mark task as complete and generate new task
-
+            await assTaskService.CompleteAndGenerateNewTask(taskId, startDate);
             return NoContent();
         }
     }

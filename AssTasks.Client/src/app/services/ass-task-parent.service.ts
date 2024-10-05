@@ -59,6 +59,10 @@ export class AssTaskParentService {
       );
   }
 
+  /**
+   * Updates a TaskParent by Id
+   * @param taskParent The TaskParent model to update
+   */
   updateTaskParent(taskParent: EditAssTaskView): Observable<void> {
     return this.httpClient.put<void>(APIConfig.url + `TaskParents/${taskParent.Id}`, taskParent)
       .pipe(

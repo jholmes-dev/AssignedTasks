@@ -9,4 +9,5 @@ export interface CreateAssTaskView {
     Days?: number[];
     StartDate: Date;
     Active: boolean;
+    OwnerId?: number;
 }

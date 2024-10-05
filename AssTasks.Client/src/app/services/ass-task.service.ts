@@ -21,14 +21,14 @@ export class AssTaskService {
    * Watcher method for receiving notifications that the task list has been updated
    * @returns A watchable that emits when the task list updates
    */
-  watchAssTasks(): Observable<boolean> {
+  public watchAssTasks(): Observable<boolean> {
     return this.assTasksUpdated.asObservable();
   }
 
   /**
    * Emitter method for when the list of tasks is updated
    */
-  emitAssTasksUpdated(): void {
+  public emitAssTasksUpdated(): void {
     this.assTasksUpdated.next(true);
   }
 
@@ -37,7 +37,7 @@ export class AssTaskService {
    * @param id the task ID to find and return
    * @returns a task matching the given ID, or undefined if no matching task was found
    */
-  getTask(id: number): Observable<Task | undefined> {
+  public getTask(id: number): Observable<Task | undefined> {
     throw Error("Method not implemented" + id);
   }
 
@@ -45,7 +45,7 @@ export class AssTaskService {
    * Gets all tasks
    * @returns all tasks
    */
-  getTasks(): Observable<Task[]> {
+  public getTasks(): Observable<Task[]> {
     return this.httpClient.get<Task[]>(APIConfig.url + "AssTasks")
       .pipe(
         map((tasks: Task[]) => {
@@ -63,9 +63,25 @@ export class AssTaskService {
    * Creates a new TaskParent, which generates and returns the next AssTask
    * @returns the created AssTask
    */
-  createTask(taskData: CreateAssTaskView): Observable<Task> {
+  public createTask(taskData: CreateAssTaskView): Observable<Task> {
     return this.httpClient
       .post<Task>(APIConfig.url + "TaskParents/CreateAndGenerateTask", taskData)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
+
+  /**
+   * Marks a given task a completed and generates the next task from the parent
+   * @param taskId The task to complete
+   */
+  public completeAndRegenerateTask(taskId: number): Observable<void> {
+    return this.httpClient
+      .post<void>(APIConfig.url + `AssTasks/${taskId}/Complete`, { startDate: new Date().toISOString() })
       .pipe(
         tap({
           next: () => {
