@@ -54,11 +54,11 @@ export class TaskComponent {
     if (daysUntilDue < 0) {
       return `${Math.abs(daysUntilDue)} Day${daysUntilDue === -1 ? '' : 's'} Overdue`;
     } else if (daysUntilDue === 0) {
-      return "Due today";
+      return "Today";
     } else if (daysUntilDue === 1) {
-      return "Due tomorrow";
+      return "Tomorrow";
     } else {
-      return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
+      return `${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
     }
   }
   
