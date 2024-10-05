@@ -93,11 +93,14 @@ export class CreateEditTaskModalComponent {
       ]),
       StartDate: new FormControl(new Date(), [
         Validators.required
-      ]),
-      OwnerId: new FormControl(null, [
-        Validators.required
       ])
     });
+
+    if (!this.isEdit) {
+      this.createTaskForm.addControl("OwnerId", new FormControl(null, [
+        Validators.required
+      ]));
+    }
   }
 
   /**

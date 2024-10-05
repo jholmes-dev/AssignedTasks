@@ -2,7 +2,9 @@ import { Observable, Subject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { BaseModalData, CreateEditUserModalData, CreateTaskModalData } from '../models/modal-data';
+import {
+    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData
+} from '../models/modal-data';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { BaseModalData, CreateEditUserModalData, CreateTaskModalData } from '../
 export class ModalService {
   private createTaskModalSubject = new Subject<CreateTaskModalData>();
   private createEditUserModalSubject = new Subject<CreateEditUserModalData>();
-  private completeTaskModalSubject = new Subject<BaseModalData>();
+  private completeTaskModalSubject = new Subject<CompleteTaskModalData>();
   private manageTasksModalSubject = new Subject<BaseModalData>();
   private manageUsersModalSubject = new Subject<BaseModalData>();
 
@@ -37,10 +39,10 @@ export class ModalService {
   /**
    * Complete task modal functions
    */
-  emitCompleteTaskModalState(modalData: BaseModalData): void {
+  emitCompleteTaskModalState(modalData: CompleteTaskModalData): void {
     this.completeTaskModalSubject.next(modalData);
   }
-  getCompleteTaskModalSubject(): Observable<BaseModalData> {
+  getCompleteTaskModalSubject(): Observable<CompleteTaskModalData> {
     return this.completeTaskModalSubject.asObservable();
   }
 

@@ -4,7 +4,7 @@ import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import {
-    BaseModalData, CreateEditUserModalData, CreateTaskModalData
+    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData
 } from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
@@ -70,9 +70,11 @@ export class ModalControllerComponent {
     });
     
     // Register Complete Task Modal
-    this.completeTaskSub = this.modalService.getCompleteTaskModalSubject().subscribe((modalData: BaseModalData) => {
+    this.completeTaskSub = this.modalService.getCompleteTaskModalSubject().subscribe((modalData: CompleteTaskModalData) => {
       if (modalData.state) {
-        this.completeTaskDialog.open(CompleteTaskModalComponent);
+        this.completeTaskDialog.open(CompleteTaskModalComponent, {
+          data: modalData
+        });
       }
     });
 

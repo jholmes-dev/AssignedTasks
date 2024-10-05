@@ -8,11 +8,14 @@ namespace AssTasks.Server.Services
     public class AssTaskService : IAssTaskService
     {
         private readonly IAssTaskRepository assTaskRepository;
+        private readonly IUserRepository userRepository;
 
         public AssTaskService(
-            IAssTaskRepository assTaskRepository)
+            IAssTaskRepository assTaskRepository, 
+            IUserRepository userRepository)
         {
             this.assTaskRepository = assTaskRepository;
+            this.userRepository = userRepository;
         }
 
         /// <summary>
@@ -51,6 +54,13 @@ namespace AssTasks.Server.Services
             return newTask;
         }
 
+        /// <summary>
+        /// Generates a days type task
+        /// </summary>
+        /// <param name="parent">The TaskParent this task is related to</param>
+        /// <param name="startDate">The start date of the task</param>
+        /// <returns>The generated AssTask</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public AssTask GenerateDaysTask(TaskParent parent, DateTime? startDate)
         {
             if (parent.Days == null)
@@ -82,6 +92,45 @@ namespace AssTasks.Server.Services
                 DueAt = targetDate
             };
 
+            return newTask;
+        }
+
+        /// <summary>
+        /// Marks a given task as completed, and generates a new task from the parent
+        /// </summary>
+        /// <param name="taskId">The Id to mark as completed</param>
+        /// <param name="startDate">The date to start the next task on</param>
+        /// <returns>The generated task</returns>
+        /// <exception cref="ArgumentException">If the task to mark is not found</exception>
+        public async Task<AssTask> CompleteAndGenerateNewTask(int taskId, DateTime? startDate)
+        {
+            // Get the task
+            var assTask = (await assTaskRepository.GetAsync(
+                x => x.Id == taskId,
+                null,
+                "TaskParent"
+            )).FirstOrDefault();
+
+            if (assTask == null)
+            {
+                throw new ArgumentException("AssTask could not be found.");
+            }
+
+            // Mark as complete
+            assTask.CompletedAt = DateTime.UtcNow;
+            await assTaskRepository.UpdateAsync(assTask);
+
+            // Generate new task
+            var newTask = GenerateTaskFromParent(assTask.TaskParent, startDate);
+
+            // Get next assignee
+            var users = (await userRepository.GetAsync(x => true, x => x.OrderBy(y => y.Id))).ToList();
+            var nextAssigneeIndex = users.FindIndex(x => x.Id == assTask.OwnerId) + 1;
+            newTask.OwnerId = nextAssigneeIndex >= users.Count ? users[0].Id : users[nextAssigneeIndex].Id;
+
+            await assTaskRepository.AddAsync(newTask);
+
+            // Return new task
             return newTask;
         }
     }

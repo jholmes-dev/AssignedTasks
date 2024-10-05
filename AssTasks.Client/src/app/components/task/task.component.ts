@@ -34,7 +34,7 @@ export class TaskComponent {
   }
 
   public openCompleteTaskDialog() {
-    this.modalService.emitCompleteTaskModalState({ state: true });
+    this.modalService.emitCompleteTaskModalState({ state: true, data: { task: this.task } });
   }
 
   public getDueClass(due: Date): string {

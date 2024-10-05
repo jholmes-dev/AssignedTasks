@@ -19,15 +19,18 @@ namespace AssTasks.Server.Controllers
         private readonly IAssTaskService assTaskService;
         private readonly ITaskParentRepository taskParentRepository;
         private readonly IAssTaskRepository assTaskRepository;
+        private readonly IUserRepository userRepository;
 
         public TaskParentsController(
             IAssTaskService assTaskService,
             ITaskParentRepository taskParentRepository,
-            IAssTaskRepository assTaskRepository)
+            IAssTaskRepository assTaskRepository,
+            IUserRepository userRepository)
         {
             this.assTaskService = assTaskService;
             this.taskParentRepository = taskParentRepository;
             this.assTaskRepository = assTaskRepository;
+            this.userRepository = userRepository;
         }
 
         /// <summary>
@@ -119,6 +122,8 @@ namespace AssTasks.Server.Controllers
             { // Activate
                 // Generate a new task
                 var generatedTask = assTaskService.GenerateTaskFromParent(taskParent);
+                var assignedUser = (await userRepository.GetAllAsync()).FirstOrDefault();
+                generatedTask.OwnerId = assignedUser?.Id;
                 await assTaskRepository.AddAsync(generatedTask);
             }
 
