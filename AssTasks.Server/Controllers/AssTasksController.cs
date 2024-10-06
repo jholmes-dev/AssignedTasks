@@ -28,7 +28,7 @@ namespace AssTasks.Server.Controllers
         public async Task<ActionResult<IEnumerable<AssTask>>> GetAssTasks()
         {
             return Ok(
-                await assTaskRepository.GetAsync(x => x.CompletedAt == null, x => x.OrderBy(y => y.DueAt), "TaskParent")
+                await assTaskRepository.GetAsync(x => x.CompletedAt == null, x => x.OrderBy(y => y.DueAt), "TaskParent,Owner")
             );
         }
 

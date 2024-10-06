@@ -1,4 +1,9 @@
 <mat-nav-list>
+    <h5 class="action-menu-title">{{ data.taskParent.title }}</h5>
+    <div class="task-data">
+        <div>Assigned to {{ data.owner?.name }}</div>
+        <div><em>Due {{ data.dueAt | date:'mediumDate' }}</em></div>
+    </div>
     <mat-list-item (click)="true">
         <mat-icon matListItemIcon class="material-symbols-outlined">next_plan</mat-icon>
         <span matListItemTitle>Reassign Task</span>

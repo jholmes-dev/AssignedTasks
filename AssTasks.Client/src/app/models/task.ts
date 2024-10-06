@@ -1,4 +1,5 @@
 import { TaskParent } from './task-parent';
+import { User } from './user';
 
 export interface Task {
     id: number;
@@ -7,5 +8,6 @@ export interface Task {
     dueAt: Date;
     completedBy?: number;
     ownerId?: number;
+    owner?: User;
     taskParent: TaskParent;
 }

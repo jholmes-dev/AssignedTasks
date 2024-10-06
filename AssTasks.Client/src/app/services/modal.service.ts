@@ -15,7 +15,6 @@ export class ModalService {
   private completeTaskModalSubject = new Subject<CompleteTaskModalData>();
   private manageTasksModalSubject = new Subject<BaseModalData>();
   private manageUsersModalSubject = new Subject<BaseModalData>();
-  private assTaskActionsModalSubject = new Subject<BaseModalData>();
 
   /**
    * Create task modal functions
@@ -65,15 +64,5 @@ export class ModalService {
   }
   getManageUsersModalSubject(): Observable<BaseModalData> {
     return this.manageUsersModalSubject.asObservable();
-  }
-
-  /**
-   * AssTask Actions modal functions
-   */
-  emitAssTaskActionsModalState(modalData: BaseModalData): void {
-    this.assTaskActionsModalSubject.next(modalData);
-  }
-  getAssTaskActionsModalSubject(): Observable<BaseModalData> {
-    return this.assTaskActionsModalSubject.asObservable();
   }
 }

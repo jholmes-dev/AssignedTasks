@@ -40,13 +40,9 @@ export class TaskComponent {
     this.modalService.emitCompleteTaskModalState({ state: true, data: { task: this.task } });
   }
 
-  public openAssTaskActionsDialog(): void {
-    this.modalService.emitAssTaskActionsModalState({ state: true });
-  }
-
   public openAssTaskActionMenu(): void {
     this.actionMenu.open(AssTaskActionMenuComponent, {
-      panelClass: "mat-bottom-sheet-container-medium"
+      data: this.task
     });
   }
 
