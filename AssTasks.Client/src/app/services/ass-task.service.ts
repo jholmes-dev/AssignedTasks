@@ -90,4 +90,16 @@ export class AssTaskService {
         })
       );
   }
+
+  public reassignTask(taskId: number, newOwnerId: number): Observable<void> {
+    return this.httpClient
+      .post<void>(APIConfig.url + `AssTasks/${taskId}/Reassign`, newOwnerId)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
 }

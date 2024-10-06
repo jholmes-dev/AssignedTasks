@@ -26,7 +26,12 @@ export class AssTaskActionMenuComponent {
     private modalService: ModalService
   ) {}
 
-  close() {
+  public openReassignTaskDialog(): void {
+    this.modalService.emitReassignTaskModalState({ state: true, data: { task: this.data } });
+    this.close();
+  }
+
+  public close(): void {
     this._actionMenuRef.dismiss();
   }
 }

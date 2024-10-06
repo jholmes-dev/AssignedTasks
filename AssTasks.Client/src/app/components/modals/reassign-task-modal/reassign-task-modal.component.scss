@@ -1,0 +1,10 @@
+.user-button-grid {
+    display: flex;
+    gap: 1rem;
+    padding: .75rem 0;
+    justify-content: center;
+
+    button {
+        font-size: 1.125rem;
+    }
+}

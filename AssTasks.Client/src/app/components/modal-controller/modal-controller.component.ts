@@ -4,7 +4,8 @@ import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import {
-    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData
+    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData,
+    ReassignTaskModalData
 } from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
@@ -22,6 +23,9 @@ import {
 import {
     ManageUsersModalComponent
 } from '../modals/manage-users-modal/manage-users-modal.component';
+import {
+    ReassignTaskModalComponent
+} from '../modals/reassign-task-modal/reassign-task-modal.component';
 
 @Component({
   selector: 'app-modal-controller',
@@ -38,12 +42,14 @@ export class ModalControllerComponent {
   readonly completeTaskDialog = inject(MatDialog);
   readonly manageTasksDialog = inject(MatDialog);
   readonly manageUsersDialog = inject(MatDialog);
+  readonly reassignTaskDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
   createEditUserSub!: Subscription;
   completeTaskSub!: Subscription;
   manageTasksSub!: Subscription;
   manageUsersSub!: Subscription;
+  reassignTaskSub!: Subscription;
 
   constructor(
     private modalService: ModalService
@@ -91,6 +97,15 @@ export class ModalControllerComponent {
         this.manageUsersDialog.open(ManageUsersModalComponent);
       }
     });
+
+    // Register Reassign Task Modal
+    this.reassignTaskSub = this.modalService.getReassignTaskModalSubject().subscribe((modalData: ReassignTaskModalData) => {
+      if (modalData.state) {
+        this.reassignTaskDialog.open(ReassignTaskModalComponent, {
+          data: modalData
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -99,5 +114,6 @@ export class ModalControllerComponent {
     this.completeTaskSub.unsubscribe();
     this.manageTasksSub.unsubscribe();
     this.manageUsersSub.unsubscribe();
+    this.reassignTaskSub.unsubscribe();
   }
 }

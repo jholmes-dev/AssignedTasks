@@ -3,7 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import {
-    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData
+    BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData,
+    ReassignTaskModalData
 } from '../models/modal-data';
 
 @Injectable({
@@ -15,6 +16,7 @@ export class ModalService {
   private completeTaskModalSubject = new Subject<CompleteTaskModalData>();
   private manageTasksModalSubject = new Subject<BaseModalData>();
   private manageUsersModalSubject = new Subject<BaseModalData>();
+  private reassignTaskModalSubject = new Subject<ReassignTaskModalData>();
 
   /**
    * Create task modal functions
@@ -64,5 +66,15 @@ export class ModalService {
   }
   getManageUsersModalSubject(): Observable<BaseModalData> {
     return this.manageUsersModalSubject.asObservable();
+  }
+
+  /**
+   * Reassign Task modal functions
+   */
+  emitReassignTaskModalState(modalData: ReassignTaskModalData): void {
+    this.reassignTaskModalSubject.next(modalData);
+  }
+  getReassignTaskModalSubject(): Observable<ReassignTaskModalData> {
+    return this.reassignTaskModalSubject.asObservable();
   }
 }

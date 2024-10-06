@@ -68,5 +68,26 @@ namespace AssTasks.Server.Controllers
             await assTaskService.CompleteAndGenerateNewTask(taskId, startDate);
             return NoContent();
         }
+
+        /// <summary>
+        /// Reassigns an AssTask to a new owner
+        /// </summary>
+        /// <param name="taskId">The task Id</param>
+        /// <param name="newOwnerId">The new Owner's Id</param>
+        [HttpPost("{taskId:int}/Reassign")]
+        public async Task<IActionResult> ReassignAssTask([FromRoute] int taskId, [FromBody] int newOwnerId)
+        {
+            var assTask = await assTaskRepository.GetByIdAsync(taskId);
+
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            assTask.OwnerId = newOwnerId;
+            await assTaskRepository.UpdateAsync(assTask);
+
+            return NoContent();
+        }
     }
 }
