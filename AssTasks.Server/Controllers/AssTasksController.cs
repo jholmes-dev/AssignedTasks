@@ -89,5 +89,27 @@ namespace AssTasks.Server.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Snoozes a given AssTask by assigning the next available due date
+        /// </summary>
+        /// <param name="taskId">The Id of the AssTask to snooze</param>
+        [HttpPost("{taskId:int}/Snooze")]
+        public async Task<IActionResult> SnoozeAssTask([FromRoute] int taskId)
+        {
+            var assTask = (await assTaskRepository.GetAsync(x => x.Id == taskId, null, "TaskParent")).FirstOrDefault();
+
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            // Generate a new task from parent, and take the start date
+            var newTask = assTaskService.GenerateTaskFromParent(assTask.TaskParent);
+            assTask.DueAt = newTask.DueAt;
+            await assTaskRepository.UpdateAsync(assTask);
+
+            return NoContent();
+        }
     }
 }

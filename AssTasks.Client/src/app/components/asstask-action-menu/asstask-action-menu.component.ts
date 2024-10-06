@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
 import { Task } from '../../models/task';
+import { AssTaskService } from '../../services/ass-task.service';
 import { ModalService } from '../../services/modal.service';
 
 @Component({
@@ -23,12 +24,19 @@ export class AssTaskActionMenuComponent {
 
   constructor(
     private _actionMenuRef: MatBottomSheetRef<AssTaskActionMenuComponent>,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private assTaskService: AssTaskService
   ) {}
 
   public openReassignTaskDialog(): void {
     this.modalService.emitReassignTaskModalState({ state: true, data: { task: this.data } });
     this.close();
+  }
+
+  public snoozeTask(): void {
+    this.assTaskService.snoozeTask(this.data.id).subscribe(() => {
+      this.close();
+    });
   }
 
   public close(): void {

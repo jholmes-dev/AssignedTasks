@@ -49,7 +49,7 @@ export class ReassignTaskModalComponent {
     });
   }
 
-  public submitReassignment(newOwnerId: number) {
+  public submitReassignment(newOwnerId: number): void {
     this.assTaskService.reassignTask(this.modalData.data.task.id, newOwnerId).subscribe(() => {
       this.dialogRef.close();
     });
