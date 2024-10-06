@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Reassign to</h2>
+<mat-dialog-content class="mat-typography">
+    <div class="user-button-grid">
+        <button *ngFor="let user of users" mat-fab extended (click)="submitReassignment(user.id)">
+          <mat-icon class="material-symbols-outlined">next_plan</mat-icon>
+          {{ user.name }}
+        </button>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="space-between">
+    <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

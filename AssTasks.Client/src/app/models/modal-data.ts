@@ -23,3 +23,5 @@ export interface CompleteTaskModalData extends BaseModalData {
         task: Task
     }
 }
+
+export interface ReassignTaskModalData extends CompleteTaskModalData {};

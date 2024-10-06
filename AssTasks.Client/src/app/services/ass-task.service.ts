@@ -90,4 +90,33 @@ export class AssTaskService {
         })
       );
   }
+
+  /**
+   * Reassigns a task to a new owner
+   * @param taskId The Id of the Task to reassign
+   * @param newOwnerId The new owner's Id
+   */
+  public reassignTask(taskId: number, newOwnerId: number): Observable<void> {
+    return this.httpClient
+      .post<void>(APIConfig.url + `AssTasks/${taskId}/Reassign`, newOwnerId)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
+
+  public snoozeTask(taskId: number): Observable<void> {
+    return this.httpClient
+      .post<void>(APIConfig.url + `AssTasks/${taskId}/Snooze`, null)
+      .pipe(
+        tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
 }

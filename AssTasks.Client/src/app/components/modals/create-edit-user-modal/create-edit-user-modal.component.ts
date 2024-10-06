@@ -56,8 +56,8 @@ export class CreateEditUserModalComponent {
     this.saving = true;
     const userData: User = this.createUserForm.value;
 
-    if (this.isEdit) {
-      userData.id = this.user?.id;
+    if (this.isEdit && this.user) {
+      userData.id = this.user.id;
       this.userService.updateUser(userData)
         .pipe(
           finalize(() => {

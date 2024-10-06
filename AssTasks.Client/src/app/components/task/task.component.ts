@@ -1,5 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -8,6 +9,7 @@ import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
 import { User } from '../../models/user';
 import { ModalService } from '../../services/modal.service';
+import { AssTaskActionMenuComponent } from '../asstask-action-menu/asstask-action-menu.component';
 
 @Component({
   selector: 'app-task',
@@ -26,15 +28,22 @@ export class TaskComponent {
   public taskOwner: User | undefined;
 
   constructor(
-    private modalService: ModalService
+    private modalService: ModalService,
+    private actionMenu: MatBottomSheet
   ) {}
 
   ngOnChanges(): void {
     this.taskOwner = this.users.find((user) => user.id == this.task.ownerId)
   }
 
-  public openCompleteTaskDialog() {
+  public openCompleteTaskDialog(): void {
     this.modalService.emitCompleteTaskModalState({ state: true, data: { task: this.task } });
+  }
+
+  public openAssTaskActionMenu(): void {
+    this.actionMenu.open(AssTaskActionMenuComponent, {
+      data: this.task
+    });
   }
 
   public getDueClass(due: Date): string {
@@ -54,11 +63,11 @@ export class TaskComponent {
     if (daysUntilDue < 0) {
       return `${Math.abs(daysUntilDue)} Day${daysUntilDue === -1 ? '' : 's'} Overdue`;
     } else if (daysUntilDue === 0) {
-      return "Due today";
+      return "Today";
     } else if (daysUntilDue === 1) {
-      return "Due tomorrow";
+      return "Tomorrow";
     } else {
-      return `Due ${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
+      return `${formatDate(new Date(due), 'mediumDate', 'en-US')}`;
     }
   }
   

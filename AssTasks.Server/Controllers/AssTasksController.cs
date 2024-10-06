@@ -28,7 +28,7 @@ namespace AssTasks.Server.Controllers
         public async Task<ActionResult<IEnumerable<AssTask>>> GetAssTasks()
         {
             return Ok(
-                await assTaskRepository.GetAsync(x => x.CompletedAt == null, x => x.OrderBy(y => y.DueAt), "TaskParent")
+                await assTaskRepository.GetAsync(x => x.CompletedAt == null, x => x.OrderBy(y => y.DueAt), "TaskParent,Owner")
             );
         }
 
@@ -66,6 +66,49 @@ namespace AssTasks.Server.Controllers
         public async Task<IActionResult> CompleteAssTask(int taskId, DateTime? startDate)
         {
             await assTaskService.CompleteAndGenerateNewTask(taskId, startDate);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Reassigns an AssTask to a new owner
+        /// </summary>
+        /// <param name="taskId">The task Id</param>
+        /// <param name="newOwnerId">The new Owner's Id</param>
+        [HttpPost("{taskId:int}/Reassign")]
+        public async Task<IActionResult> ReassignAssTask([FromRoute] int taskId, [FromBody] int newOwnerId)
+        {
+            var assTask = await assTaskRepository.GetByIdAsync(taskId);
+
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            assTask.OwnerId = newOwnerId;
+            await assTaskRepository.UpdateAsync(assTask);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Snoozes a given AssTask by assigning the next available due date
+        /// </summary>
+        /// <param name="taskId">The Id of the AssTask to snooze</param>
+        [HttpPost("{taskId:int}/Snooze")]
+        public async Task<IActionResult> SnoozeAssTask([FromRoute] int taskId)
+        {
+            var assTask = (await assTaskRepository.GetAsync(x => x.Id == taskId, null, "TaskParent")).FirstOrDefault();
+
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            // Generate a new task from parent, and take the start date
+            var newTask = assTaskService.GenerateTaskFromParent(assTask.TaskParent);
+            assTask.DueAt = newTask.DueAt;
+            await assTaskRepository.UpdateAsync(assTask);
+
             return NoContent();
         }
     }
