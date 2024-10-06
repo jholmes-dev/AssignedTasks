@@ -1,5 +1,6 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -8,6 +9,7 @@ import { TaskTypes } from '../../constants/task.constants';
 import { Task } from '../../models/task';
 import { User } from '../../models/user';
 import { ModalService } from '../../services/modal.service';
+import { AssTaskActionMenuComponent } from '../asstask-action-menu/asstask-action-menu.component';
 
 @Component({
   selector: 'app-task',
@@ -26,7 +28,8 @@ export class TaskComponent {
   public taskOwner: User | undefined;
 
   constructor(
-    private modalService: ModalService
+    private modalService: ModalService,
+    private actionMenu: MatBottomSheet
   ) {}
 
   ngOnChanges(): void {
@@ -39,6 +42,12 @@ export class TaskComponent {
 
   public openAssTaskActionsDialog(): void {
     this.modalService.emitAssTaskActionsModalState({ state: true });
+  }
+
+  public openAssTaskActionMenu(): void {
+    this.actionMenu.open(AssTaskActionMenuComponent, {
+      panelClass: "mat-bottom-sheet-container-medium"
+    });
   }
 
   public getDueClass(due: Date): string {
