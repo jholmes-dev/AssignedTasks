@@ -1,0 +1,10 @@
+.additional-actions-container {
+    display: flex;
+    text-align: center;
+    padding: 1.5rem 0;
+    gap: 2rem;
+
+    .additional-action {
+        flex: 1 1 50%;
+    }
+}

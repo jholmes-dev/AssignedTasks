@@ -33,8 +33,12 @@ export class TaskComponent {
     this.taskOwner = this.users.find((user) => user.id == this.task.ownerId)
   }
 
-  public openCompleteTaskDialog() {
+  public openCompleteTaskDialog(): void {
     this.modalService.emitCompleteTaskModalState({ state: true, data: { task: this.task } });
+  }
+
+  public openAssTaskActionsDialog(): void {
+    this.modalService.emitAssTaskActionsModalState({ state: true });
   }
 
   public getDueClass(due: Date): string {

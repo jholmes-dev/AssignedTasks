@@ -8,6 +8,9 @@ import {
 } from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
+    AsstaskActionsModalComponent
+} from '../modals/asstask-actions-modal/asstask-actions-modal.component';
+import {
     CompleteTaskModalComponent
 } from '../modals/complete-task-modal/complete-task-modal.component';
 import {
@@ -38,12 +41,14 @@ export class ModalControllerComponent {
   readonly completeTaskDialog = inject(MatDialog);
   readonly manageTasksDialog = inject(MatDialog);
   readonly manageUsersDialog = inject(MatDialog);
+  readonly assTaskActionsDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
   createEditUserSub!: Subscription;
   completeTaskSub!: Subscription;
   manageTasksSub!: Subscription;
   manageUsersSub!: Subscription;
+  assTaskActionsSub!: Subscription;
 
   constructor(
     private modalService: ModalService
@@ -91,6 +96,13 @@ export class ModalControllerComponent {
         this.manageUsersDialog.open(ManageUsersModalComponent);
       }
     });
+
+    // AssTask Actions Modal
+    this.assTaskActionsSub = this.modalService.getAssTaskActionsModalSubject().subscribe((modalData: BaseModalData) => {
+      if (modalData.state) {
+        this.assTaskActionsDialog.open(AsstaskActionsModalComponent);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -99,5 +111,6 @@ export class ModalControllerComponent {
     this.completeTaskSub.unsubscribe();
     this.manageTasksSub.unsubscribe();
     this.manageUsersSub.unsubscribe();
+    this.assTaskActionsSub.unsubscribe();
   }
 }
