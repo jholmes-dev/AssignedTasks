@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatIcon } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Task } from '../../models/task';
 import { AssTaskService } from '../../services/ass-task.service';
@@ -25,7 +26,8 @@ export class AssTaskActionMenuComponent {
   constructor(
     private _actionMenuRef: MatBottomSheetRef<AssTaskActionMenuComponent>,
     private modalService: ModalService,
-    private assTaskService: AssTaskService
+    private assTaskService: AssTaskService,
+    private _snackBar: MatSnackBar
   ) {}
 
   public openReassignTaskDialog(): void {
@@ -35,6 +37,10 @@ export class AssTaskActionMenuComponent {
 
   public snoozeTask(): void {
     this.assTaskService.snoozeTask(this.data.id).subscribe(() => {
+      this._snackBar.open('Task has been snoozed', 'Close', {
+        verticalPosition: "top",
+        duration: 3000
+      });
       this.close();
     });
   }

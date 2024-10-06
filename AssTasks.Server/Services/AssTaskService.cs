@@ -120,6 +120,12 @@ namespace AssTasks.Server.Services
             assTask.CompletedAt = DateTime.UtcNow;
             await assTaskRepository.UpdateAsync(assTask);
 
+            // If Task type is days, adjust startDate to be the dueDate + 1
+            if (assTask.TaskParent.FrequencyType == TaskConstants.DAYS_TASK)
+            {
+                startDate = assTask.DueAt.AddDays(1);
+            }
+
             // Generate new task
             var newTask = GenerateTaskFromParent(assTask.TaskParent, startDate);
 

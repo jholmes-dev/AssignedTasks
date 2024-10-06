@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ReassignTaskModalData } from '../../../models/modal-data';
 import { User } from '../../../models/user';
@@ -30,7 +31,8 @@ export class ReassignTaskModalComponent {
   constructor(
     private dialogRef: MatDialogRef<ReassignTaskModalComponent>,
     private userService: UserService,
-    private assTaskService: AssTaskService
+    private assTaskService: AssTaskService,
+    private _snackBar: MatSnackBar
   ) {}
 
   public ngOnInit(): void {
@@ -51,6 +53,10 @@ export class ReassignTaskModalComponent {
 
   public submitReassignment(newOwnerId: number): void {
     this.assTaskService.reassignTask(this.modalData.data.task.id, newOwnerId).subscribe(() => {
+        this._snackBar.open(`Task assigned to ${this.users.find(user => user.id === newOwnerId)?.name}`, 'Close', {
+          verticalPosition: "top",
+          duration: 3000
+        });
       this.dialogRef.close();
     });
   }
