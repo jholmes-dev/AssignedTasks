@@ -35,7 +35,7 @@ export class ManageUsersModalComponent {
   private watchUsersSub!: Subscription;
   readonly confirmModal = inject(MatDialog);
   public users: User[] = [];
-  public displayedColumns: string[] = [ "createdAt", "name", "controls" ];
+  public displayedColumns: string[] = [ "name", "controls" ];
   public loading: boolean = true;
 
   constructor(
