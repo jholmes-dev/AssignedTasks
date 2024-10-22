@@ -55,7 +55,7 @@ export class TaskGridComponent {
     // this is to force subtasks to rerender each day
     // without having the refresh the page
     setInterval(() => {
-      this.currentDate = new Date(this.currentDate.setDate(this.currentDate.getDate() + 1));
+      this.currentDate = new Date();
       this.currentDate.setHours(0, 0, 0, 0);
     }, 60000); // Every minute
   }

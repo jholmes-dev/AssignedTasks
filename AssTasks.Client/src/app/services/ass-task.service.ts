@@ -108,11 +108,32 @@ export class AssTaskService {
       );
   }
 
+  /**
+   * Resets, or 'snoozes' a task to its next calculated due date
+   * @param taskId The Id of the task to snooze
+   */
   public snoozeTask(taskId: number): Observable<void> {
     return this.httpClient
       .post<void>(APIConfig.url + `AssTasks/${taskId}/Snooze`, null)
       .pipe(
         tap({
+          next: () => {
+            this.emitAssTasksUpdated();
+          }
+        })
+      );
+  }
+
+  /**
+   * Directly sets a task's DueDate
+   * @param taskId The Id of the task to set
+   * @param dueDate The new due date
+   */
+  public setTaskDueDate(taskId: number, dueDate: Date): Observable<void> {
+    return this.httpClient
+      .put<void>(APIConfig.url + `AssTasks/${taskId}/DueDate`, dueDate)
+      .pipe(
+        tap( {
           next: () => {
             this.emitAssTasksUpdated();
           }

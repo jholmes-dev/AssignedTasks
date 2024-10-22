@@ -5,7 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import {
     BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData,
-    ReassignTaskModalData
+    ReassignTaskModalData, SetDueDateModalData
 } from '../../models/modal-data';
 import { ModalService } from '../../services/modal.service';
 import {
@@ -26,6 +26,9 @@ import {
 import {
     ReassignTaskModalComponent
 } from '../modals/reassign-task-modal/reassign-task-modal.component';
+import {
+    SetDueDateModalComponent
+} from '../modals/set-due-date-modal/set-due-date-modal.component';
 
 @Component({
   selector: 'app-modal-controller',
@@ -43,6 +46,7 @@ export class ModalControllerComponent {
   readonly manageTasksDialog = inject(MatDialog);
   readonly manageUsersDialog = inject(MatDialog);
   readonly reassignTaskDialog = inject(MatDialog);
+  readonly setDueDateDialog = inject(MatDialog);
 
   createTaskSub!: Subscription;
   createEditUserSub!: Subscription;
@@ -50,6 +54,7 @@ export class ModalControllerComponent {
   manageTasksSub!: Subscription;
   manageUsersSub!: Subscription;
   reassignTaskSub!: Subscription;
+  setDueDateSub!: Subscription;
 
   constructor(
     private modalService: ModalService
@@ -106,6 +111,15 @@ export class ModalControllerComponent {
         });
       }
     });
+
+    // Register Edit Due Date Modal
+    this.setDueDateSub = this.modalService.getSetDueDateModalSubject().subscribe((modalData: SetDueDateModalData) => {
+      if (modalData.state) {
+        this.setDueDateDialog.open(SetDueDateModalComponent, {
+          data: modalData
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -115,5 +129,6 @@ export class ModalControllerComponent {
     this.manageTasksSub.unsubscribe();
     this.manageUsersSub.unsubscribe();
     this.reassignTaskSub.unsubscribe();
+    this.setDueDateSub.unsubscribe();
   }
 }

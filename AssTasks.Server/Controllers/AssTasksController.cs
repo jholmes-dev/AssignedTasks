@@ -111,5 +111,26 @@ namespace AssTasks.Server.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Updates an AssTask's due date directly
+        /// </summary>
+        /// <param name="taskId">The task to update</param>
+        /// <param name="newDueDate">The new due date to set</param>
+        [HttpPut("{taskId:int}/DueDate")]
+        public async Task<IActionResult> SetAssTaskDueDate([FromRoute] int taskId, [FromBody] DateTime newDueDate)
+        {
+            var assTask = await assTaskRepository.GetByIdAsync(taskId);
+
+            if (assTask == null)
+            {
+                return NotFound();
+            }
+
+            assTask.DueAt = newDueDate;
+            await assTaskRepository.UpdateAsync(assTask);
+
+            return NoContent();
+        }
     }
 }
