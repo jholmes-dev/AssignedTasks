@@ -17,6 +17,7 @@ import { TaskComponent } from '../task/task.component';
   styleUrl: './task-grid.component.scss'
 })
 export class TaskGridComponent {
+  public currentDate: Date = new Date();
   public tasks: Task[] = [];
   public users: User[] = [];
   private watchTasksSub!: Subscription;
@@ -38,6 +39,16 @@ export class TaskGridComponent {
           this.getAssTasks();
         }
       });
+
+    this.currentDate.setHours(0, 0, 0, 0);
+
+    // Set date to update on an interval
+    // this is to force subtasks to rerender each day
+    // without having the refresh the page
+    setInterval(() => {
+      this.currentDate = new Date(this.currentDate.setDate(this.currentDate.getDate() + 1));
+      this.currentDate.setHours(0, 0, 0, 0);
+    }, 60000); // Every minute
   }
 
   getAssTasks(): void {
