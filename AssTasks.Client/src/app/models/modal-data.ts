@@ -25,3 +25,4 @@ export interface CompleteTaskModalData extends BaseModalData {
 }
 
 export interface ReassignTaskModalData extends CompleteTaskModalData {};
+export interface SetDueDateModalData extends CompleteTaskModalData {};

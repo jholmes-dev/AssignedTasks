@@ -53,7 +53,7 @@ export class ReassignTaskModalComponent {
 
   public submitReassignment(newOwnerId: number): void {
     this.assTaskService.reassignTask(this.modalData.data.task.id, newOwnerId).subscribe(() => {
-        this._snackBar.open(`Task assigned to ${this.users.find(user => user.id === newOwnerId)?.name}`, 'Close', {
+        this._snackBar.open(`Task reassigned to ${this.users.find(user => user.id === newOwnerId)?.name}`, 'Close', {
           verticalPosition: "top",
           duration: 3000
         });

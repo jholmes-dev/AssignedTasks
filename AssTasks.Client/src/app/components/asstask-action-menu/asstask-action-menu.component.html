@@ -9,8 +9,18 @@
         <span matListItemTitle>Reassign Task</span>
     </mat-list-item>
     
+    <mat-list-item (click)="openSetDueDateDialog()">
+        <mat-icon matListItemIcon class="material-symbols-outlined">event</mat-icon>
+        <span matListItemTitle>Set Due Date</span>
+    </mat-list-item>
+
     <mat-list-item (click)="snoozeTask()">
         <mat-icon matListItemIcon class="material-symbols-outlined">snooze</mat-icon>
         <span matListItemTitle>Snooze Task</span>
+    </mat-list-item>
+
+    <mat-list-item (click)="openEditTaskDialog()">
+        <mat-icon matListItemIcon class="material-symbols-outlined">edit</mat-icon>
+        <span matListItemTitle>Edit Task Parent</span>
     </mat-list-item>
 </mat-nav-list>

@@ -45,6 +45,16 @@ export class AssTaskActionMenuComponent {
     });
   }
 
+  public openSetDueDateDialog(): void {
+    this.modalService.emitSetDueDateModalState({ state: true, data: { task: this.data } });
+    this.close();
+  }
+
+  public openEditTaskDialog(): void {
+    this.modalService.emitCreateTaskModalState({ state: true, data: { taskParent: this.data.taskParent }});
+    this.close();
+  }
+
   public close(): void {
     this._actionMenuRef.dismiss();
   }

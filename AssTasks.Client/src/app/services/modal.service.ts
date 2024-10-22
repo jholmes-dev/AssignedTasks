@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 
 import {
     BaseModalData, CompleteTaskModalData, CreateEditUserModalData, CreateTaskModalData,
-    ReassignTaskModalData
+    ReassignTaskModalData, SetDueDateModalData
 } from '../models/modal-data';
 
 @Injectable({
@@ -17,6 +17,7 @@ export class ModalService {
   private manageTasksModalSubject = new Subject<BaseModalData>();
   private manageUsersModalSubject = new Subject<BaseModalData>();
   private reassignTaskModalSubject = new Subject<ReassignTaskModalData>();
+  private setDueDateModalSubject = new Subject<SetDueDateModalData>();
 
   /**
    * Create task modal functions
@@ -76,5 +77,15 @@ export class ModalService {
   }
   getReassignTaskModalSubject(): Observable<ReassignTaskModalData> {
     return this.reassignTaskModalSubject.asObservable();
+  }
+
+  /**
+   * Edit Due Date modal functions
+   */
+  emitSetDueDateModalState(modalData: SetDueDateModalData): void {
+    this.setDueDateModalSubject.next(modalData);
+  }
+  getSetDueDateModalSubject(): Observable<SetDueDateModalData> {
+    return this.setDueDateModalSubject.asObservable();
   }
 }

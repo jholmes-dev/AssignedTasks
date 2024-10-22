@@ -1,0 +1,19 @@
+<form [formGroup]="setDueDateForm" (ngSubmit)="submit()">
+    <h2 mat-dialog-title>Set Due Date</h2>
+    <mat-dialog-content class="mat-typography">
+        <div class="user-button-grid">
+            <mat-form-field>
+                <mat-label>New Due Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="newDueDate">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="space-between">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button type="submit" mat-flat-button [disabled]="saving">Update</button>
+    </mat-dialog-actions>
+</form>
