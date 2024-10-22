@@ -19,8 +19,9 @@ import { TaskComponent } from '../task/task.component';
 export class TaskGridComponent {
   public currentDate: Date = new Date();
   public tasks: Task[] = [];
-  public users: User[] = [];
   private watchTasksSub!: Subscription;
+  public users: User[] = [];
+  private watchUsersSub!: Subscription;
 
   constructor(
       private taskService: AssTaskService,
@@ -37,6 +38,14 @@ export class TaskGridComponent {
       .subscribe({
         next: () => {
           this.getAssTasks();
+        }
+      });
+
+    // Refresh users each time userService emits changes
+    this.watchUsersSub = this.userService.watchUsers()
+      .subscribe( {
+        next: () => {
+          this.getUsers();
         }
       });
 
