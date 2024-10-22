@@ -23,6 +23,7 @@ import { AssTaskActionMenuComponent } from '../asstask-action-menu/asstask-actio
   styleUrl: './task.component.scss'
 })
 export class TaskComponent {
+  @Input() currentDate!: Date;
   @Input() task!: Task;
   @Input() users: User[] = [];
   public taskOwner: User | undefined;
@@ -90,34 +91,26 @@ export class TaskComponent {
   }
 
   public isOverdue(due: Date): boolean {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
-    return dueDate < today;
+    return dueDate < this.currentDate;
   }
 
   public getDaysUntilDue(due: Date): number {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
-    return (dueDate.getTime() - today.getTime()) / 1000 / 60 / 60 / 24;;
+    return (dueDate.getTime() - this.currentDate.getTime()) / 1000 / 60 / 60 / 24;;
   }
 
   public isDueToday(due: Date): boolean {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
-    return dueDate.getTime() === today.getTime();
+    return dueDate.getTime() === this.currentDate.getTime();
   }
 
   public isDueTomorrow(due: Date): boolean {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
+    const tomorrow = new Date(this.currentDate);
+    tomorrow.setDate(this.currentDate.getDate() + 1);
     const dueDate = new Date(due);
     dueDate.setHours(0, 0, 0, 0);
     return dueDate.getTime() === tomorrow.getTime();
