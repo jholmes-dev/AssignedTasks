@@ -9,13 +9,16 @@ namespace AssTasks.Server.Services
     {
         private readonly IAssTaskRepository assTaskRepository;
         private readonly IUserRepository userRepository;
+        private readonly ITaskParentService taskParentService;
 
         public AssTaskService(
-            IAssTaskRepository assTaskRepository, 
-            IUserRepository userRepository)
+            IAssTaskRepository assTaskRepository,
+            IUserRepository userRepository,
+            ITaskParentService taskParentService)
         {
             this.assTaskRepository = assTaskRepository;
             this.userRepository = userRepository;
+            this.taskParentService = taskParentService;
         }
 
         /// <summary>
@@ -129,10 +132,8 @@ namespace AssTasks.Server.Services
             // Generate new task
             var newTask = GenerateTaskFromParent(assTask.TaskParent, startDate);
 
-            // Get next assignee
-            var users = (await userRepository.GetAsync(x => true, x => x.OrderBy(y => y.Id))).ToList();
-            var nextAssigneeIndex = users.FindIndex(x => x.Id == assTask.OwnerId) + 1;
-            newTask.OwnerId = nextAssigneeIndex >= users.Count ? users[0].Id : users[nextAssigneeIndex].Id;
+            // Set next assignee
+            newTask.OwnerId = await taskParentService.GetNextAsigneeId(assTask.TaskParent);
 
             await assTaskRepository.AddAsync(newTask);
 

@@ -11,6 +11,7 @@
         public List<int>? Days { get; set; }
         public bool Active { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<int>? AssignableTo { get; set; }
         public ICollection<AssTask> AssTasks { get; } = new List<AssTask>();
     }
 }
