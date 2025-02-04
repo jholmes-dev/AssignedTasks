@@ -3,10 +3,10 @@ import { map, Observable, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { APIConfig } from '../constants/api.constant';
 import { TaskParent } from '../models/task-parent';
 import { EditAssTaskView } from '../models/views/edit-asstask-view.model';
 import { AssTaskService } from './ass-task.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +48,7 @@ export class AssTaskParentService {
    * @returns all tasks
    */
   getTaskParents(): Observable<TaskParent[]> {
-    return this.httpClient.get<TaskParent[]>(APIConfig.url + "TaskParents")
+    return this.httpClient.get<TaskParent[]>(environment.apiUrl + "TaskParents")
       .pipe(
         map((taskParents: TaskParent[]) => {
           return taskParents.map((taskParent: TaskParent) => {
@@ -64,7 +64,7 @@ export class AssTaskParentService {
    * @param taskParent The TaskParent model to update
    */
   updateTaskParent(taskParent: EditAssTaskView): Observable<void> {
-    return this.httpClient.put<void>(APIConfig.url + `TaskParents/${taskParent.Id}`, taskParent)
+    return this.httpClient.put<void>(environment.apiUrl + `TaskParents/${taskParent.Id}`, taskParent)
       .pipe(
         tap({
           next: () => {
@@ -77,11 +77,11 @@ export class AssTaskParentService {
 
   /**
    * Deletes a TaskParent by id
-   * @param id 
+   * @param id
    * @returns an Observable that deletes the task for the given id
    */
   deleteTaskParent(id: number): Observable<void> {
-    return this.httpClient.delete<void>(APIConfig.url + `TaskParents/${id}`)
+    return this.httpClient.delete<void>(environment.apiUrl + `TaskParents/${id}`)
     .pipe(
         tap({
           next: () => {
@@ -98,7 +98,7 @@ export class AssTaskParentService {
    * @returns an Observable that toggle the TaskParent's status
    */
   toggleTaskParentStatus(id: number): Observable<void> {
-    return this.httpClient.post<void>(APIConfig.url + `TaskParents/${id}/ToggleTaskParentActive`, null)
+    return this.httpClient.post<void>(environment.apiUrl + `TaskParents/${id}/ToggleTaskParentActive`, null)
     .pipe(
         tap({
           next: () => {
