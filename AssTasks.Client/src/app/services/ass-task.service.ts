@@ -3,9 +3,9 @@ import { map, Observable, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { APIConfig } from '../constants/api.constant';
 import { Task } from '../models/task';
 import { CreateAssTaskView } from '../models/views/create-asstask-view.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,7 @@ export class AssTaskService {
    * @returns all tasks
    */
   public getTasks(): Observable<Task[]> {
-    return this.httpClient.get<Task[]>(APIConfig.url + "AssTasks")
+    return this.httpClient.get<Task[]>(environment.apiUrl + "AssTasks")
       .pipe(
         map((tasks: Task[]) => {
           return tasks.map((task: Task) => {
@@ -65,7 +65,7 @@ export class AssTaskService {
    */
   public createTask(taskData: CreateAssTaskView): Observable<Task> {
     return this.httpClient
-      .post<Task>(APIConfig.url + "TaskParents/CreateAndGenerateTask", taskData)
+      .post<Task>(environment.apiUrl + "TaskParents/CreateAndGenerateTask", taskData)
       .pipe(
         tap({
           next: () => {
@@ -81,7 +81,7 @@ export class AssTaskService {
    */
   public completeAndRegenerateTask(taskId: number): Observable<void> {
     return this.httpClient
-      .post<void>(APIConfig.url + `AssTasks/${taskId}/Complete`, { startDate: new Date().toISOString() })
+      .post<void>(environment.apiUrl + `AssTasks/${taskId}/Complete`, { startDate: new Date().toISOString() })
       .pipe(
         tap({
           next: () => {
@@ -98,7 +98,7 @@ export class AssTaskService {
    */
   public reassignTask(taskId: number, newOwnerId: number): Observable<void> {
     return this.httpClient
-      .post<void>(APIConfig.url + `AssTasks/${taskId}/Reassign`, newOwnerId)
+      .post<void>(environment.apiUrl + `AssTasks/${taskId}/Reassign`, newOwnerId)
       .pipe(
         tap({
           next: () => {
@@ -114,7 +114,7 @@ export class AssTaskService {
    */
   public snoozeTask(taskId: number): Observable<void> {
     return this.httpClient
-      .post<void>(APIConfig.url + `AssTasks/${taskId}/Snooze`, null)
+      .post<void>(environment.apiUrl + `AssTasks/${taskId}/Snooze`, null)
       .pipe(
         tap({
           next: () => {
@@ -131,7 +131,7 @@ export class AssTaskService {
    */
   public setTaskDueDate(taskId: number, dueDate: Date): Observable<void> {
     return this.httpClient
-      .put<void>(APIConfig.url + `AssTasks/${taskId}/DueDate`, dueDate)
+      .put<void>(environment.apiUrl + `AssTasks/${taskId}/DueDate`, dueDate)
       .pipe(
         tap( {
           next: () => {

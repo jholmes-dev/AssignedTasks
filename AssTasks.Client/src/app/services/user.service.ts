@@ -3,8 +3,8 @@ import { Observable, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { APIConfig } from '../constants/api.constant';
 import { User } from '../models/user';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -33,11 +33,11 @@ export class UserService {
 
   /**
    * Creates a User
-   * @param userData The User data 
+   * @param userData The User data
    * @returns The created User
    */
   public createUser(userData: User): Observable<User> {
-    return this.httpClient.post<User>(APIConfig.url + "Users", userData);
+    return this.httpClient.post<User>(environment.apiUrl + "Users", userData);
   }
 
   /**
@@ -45,11 +45,11 @@ export class UserService {
    * @returns A list of existing Users
    */
   public getUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(APIConfig.url + "Users");
+    return this.httpClient.get<User[]>(environment.apiUrl + "Users");
   }
 
   public updateUser(user: User): Observable<void> {
-    return this.httpClient.put<void>(APIConfig.url + `Users/${user.id}`, user)
+    return this.httpClient.put<void>(environment.apiUrl + `Users/${user.id}`, user)
       .pipe(
         tap({
           next: () => {
@@ -64,7 +64,7 @@ export class UserService {
    * @param user The User to delete
    */
   public deleteUser(user: User): Observable<void> {
-    return this.httpClient.delete<void>(APIConfig.url + `Users/${user.id}`)
+    return this.httpClient.delete<void>(environment.apiUrl + `Users/${user.id}`)
       .pipe(
         tap({
           next: () => {
