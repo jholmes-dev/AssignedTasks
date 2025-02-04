@@ -25,8 +25,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: AllowedOriginsPolicy, policy =>
     {
         policy.WithOrigins(
-            "http://localhost:4200",
-            "http://www.localhost:4200"
+            "http://" + Configuration["FrontendUrl"],
+            "http://www." + Configuration["FrontendUrl"]
         ).AllowAnyMethod()
          .AllowAnyHeader()
          .WithExposedHeaders("Access-Control-Allow-Headers");
