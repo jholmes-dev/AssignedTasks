@@ -1,0 +1,42 @@
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+    background-color: var(--primary);
+}
+
+.task-options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    div {
+        text-align: center;
+        flex: 1 1 50%;
+        p {
+            margin: 0;
+        }
+        mat-form-field {
+            width: 100%;
+        }
+    }
+}
+
+.task-recurrence-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.task-frequency {
+
+    p {
+        margin: 0;
+    }
+}
+
+.task-days-wrapper {
+    text-align: center;
+
+    p {
+        margin: 0;
+    }
+}

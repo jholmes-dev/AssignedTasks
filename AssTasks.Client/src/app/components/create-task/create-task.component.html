@@ -1,0 +1,167 @@
+<mat-stepper orientation="vertical" #stepper *ngIf="this.loaded">
+
+    <mat-step [stepControl]="taskDetailsGroup">
+        <form [formGroup]="taskDetailsGroup">
+            <ng-template matStepLabel>Task Details</ng-template>
+
+            <div class="task-title-wrapper mt-3">
+                <mat-form-field class="full-width-input">
+                    <mat-label>Title</mat-label>
+                    <input required matInput formControlName="Title">
+
+                    @if (this.taskDetailsGroup.controls['Title'].hasError('required')) {
+                        <mat-error>Title is required</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="task-description-wrapper mt-3">
+                <mat-form-field class="full-width-input">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="Description"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="taskFrequencyGroup">
+        <form [formGroup]="taskFrequencyGroup">
+            <ng-template matStepLabel>Task Frequency</ng-template>
+
+            <div class="task-options mt-3">
+
+                <div class="task-type-wrapper">
+                    <p>Recurrence</p>
+                    <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="FrequencyType">
+                        <mat-button-toggle [value]="taskTypes.INTERVAL_TASK">Interval</mat-button-toggle>
+                        <mat-button-toggle [value]="taskTypes.DAYS_TASK">Days</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
+                <div class="task-priority-wrapper">
+                    <p>Priority</p>
+                    <mat-button-toggle-group hideSingleSelectionIndicator="true" formControlName="Priority">
+                        <mat-button-toggle [value]="taskPriorities.LOW">Low</mat-button-toggle>
+                        <mat-button-toggle [value]="taskPriorities.NORMAL">Normal</mat-button-toggle>
+                        <mat-button-toggle [value]="taskPriorities.HIGH">High</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
+            </div>
+
+            <div class="task-options mt-3">
+
+                <div class="task-frequency">
+                    <div class="task-recurrence-title">
+                        <button mat-icon-button
+                                aria-label="Example icon button with a vertical three dot icon"
+                                (click)="decreaseRecurrenceAmount()"
+                        >
+                            <mat-icon aria-hidden="false" fontIcon="remove"></mat-icon>
+                        </button>
+                        <p>Recur every {{ this.taskFrequencyGroup.controls['Frequency'].value }} {{ this.taskFrequencyGroup.controls['FrequencyType'].value === taskTypes.INTERVAL_TASK ? "day" : "week" }}{{ this.taskFrequencyGroup.controls['Frequency'].value == '1' ? "" : "s" }}</p>
+                        <button mat-icon-button
+                                aria-label="Example icon button with a vertical three dot icon"
+                                (click)="increaseRecurrenceAmount()"
+                        >
+                            <mat-icon aria-hidden="false" fontIcon="add"></mat-icon>
+                        </button>
+                    </div>
+                    <mat-slider class="full-width-input-slider" min="1" max="60" step="1">
+                        <input matSliderThumb formControlName="Frequency">
+                    </mat-slider>
+                </div>
+
+            </div>
+
+            <div *ngIf="this.taskFrequencyGroup.controls['FrequencyType'].value === taskTypes.DAYS_TASK" class="task-days-wrapper mb-3">
+                <mat-button-toggle-group hideMultipleSelectionIndicator="true" multiple formControlName="Days">
+                    <mat-button-toggle [value]="0">Sun</mat-button-toggle>
+                    <mat-button-toggle [value]="1">Mon</mat-button-toggle>
+                    <mat-button-toggle [value]="2">Tue</mat-button-toggle>
+                    <mat-button-toggle [value]="3">Wed</mat-button-toggle>
+                    <mat-button-toggle [value]="4">Thu</mat-button-toggle>
+                    <mat-button-toggle [value]="5">Fri</mat-button-toggle>
+                    <mat-button-toggle [value]="6">Sat</mat-button-toggle>
+                </mat-button-toggle-group>
+                @if (this.taskFrequencyGroup.controls['Days'].hasError('daysRequired') && (this.taskFrequencyGroup.controls['Days'].touched || this.taskFrequencyGroup.controls['Days'].dirty)) {
+                    <mat-error>Please select at least one day</mat-error>
+                }
+            </div>
+
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="taskAssignmentGroup">
+        <form [formGroup]="taskAssignmentGroup">
+            <ng-template matStepLabel>Task Assignment</ng-template>
+
+            <div class="task-options">
+
+                <div class="task-start-wrapper mt-3">
+                    <mat-form-field>
+                        <mat-label>Initial Assignment</mat-label>
+                        <mat-select formControlName="InitialAssigneeId">
+                            @for (user of users; track user) {
+                                <mat-option [value]="user.id">{{user.name}}</mat-option>
+                            }
+                        </mat-select>
+                        @if (this.taskAssignmentGroup.controls['InitialAssigneeId'].hasError('required')) {
+                            <mat-error>Please select an Assignee</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <div class="task-start-wrapper mt-3">
+                    <mat-form-field>
+                        <mat-label>Start Date</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="StartDate">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="task-assignable-to-wrapper mt-3">
+                <mat-slide-toggle formControlName="EnableAssignableTo" class="mb-3">This task should only be assigned to specific users</mat-slide-toggle>
+                <div *ngIf="!!this.taskAssignmentGroup.controls['EnableAssignableTo'].value" formGroupName="AssignableTo">
+                    <div *ngFor="let user of users">
+                        <mat-checkbox [formControlName]="user.name">{{ user.name }}</mat-checkbox>
+                    </div>
+                </div>
+            </div>
+
+            <mat-chip-listbox formGroupName="AssignableToTest">
+                <mat-chip-option *ngFor="let control of thisShit.controls;">
+                    test
+                </mat-chip-option>
+            </mat-chip-listbox>
+            {{ this.taskAssignmentGroup.controls["AssignableTo"].value }}
+
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+        </form>
+    </mat-step>
+
+    <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+        <p>You are now done.</p>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+    </mat-step>
+
+</mat-stepper>
