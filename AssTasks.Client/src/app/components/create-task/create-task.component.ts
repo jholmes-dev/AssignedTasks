@@ -114,26 +114,25 @@ export class CreateTaskComponent {
             StartDate: new FormControl(new Date(), [
                 Validators.required
             ]),
-            EnableAssignableTo: new FormControl(false, [
+            EnableAssignableTo: new FormControl('', [
                 Validators.required
             ]),
-            AssignableToTest: new FormGroup({
-                user1: new FormControl(false),
-                user2: new FormControl(false),
-                user3: new FormControl(false)
-            })
+            AssignableTo: new FormControl('')
+        });
+
+        this.taskAssignmentGroup.get('AssignableTo')?.valueChanges.subscribe({
+            next: (newVal: string[]) => this.checkAssigneeAvailability()
+        });
+        this.taskAssignmentGroup.get('EnableAssignableTo')?.valueChanges.subscribe({
+            next: (newVal: string[]) => this.checkAssigneeAvailability()
         });
     }
 
-    getUsersAsFormControls(): FormGroup {
-        const usersMap = new Map(this.users.map((user: User) => {
-            return [
-                user.name,
-                new FormControl(true, Validators.required)
-            ];
-        }));
-
-        return new FormGroup(Object.fromEntries(usersMap));
+    checkAssigneeAvailability(): void {
+        if (!this.taskAssignmentGroup.get('AssignableTo')?.value
+            .includes(this.taskAssignmentGroup.get('InitialAssigneeId')?.value)) {
+            this.taskAssignmentGroup.get('InitialAssigneeId')?.setValue('');
+        }
     }
 
     /**
@@ -158,6 +157,16 @@ export class CreateTaskComponent {
     decreaseRecurrenceAmount() {
         this.taskFrequencyGroup.controls['Frequency'].setValue(
             Math.max(parseInt(this.taskFrequencyGroup.controls['Frequency'].value) - 1, 1));
+    }
+
+    getAssignableUsers(): User[] {
+        if (!!this.taskAssignmentGroup.get('EnableAssignableTo')?.value) {
+            let enabledUsers = this.taskAssignmentGroup.get('AssignableTo')?.value ?? [];
+            return this.users.filter((user: User) => {
+                return enabledUsers.includes(user.id);
+            });
+        }
+        return this.users;
     }
 
 }
