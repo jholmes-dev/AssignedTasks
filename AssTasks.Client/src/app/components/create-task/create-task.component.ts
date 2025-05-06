@@ -101,7 +101,7 @@ export class CreateTaskComponent {
             Priority: new FormControl(this.taskPriorities.NORMAL, [
                 Validators.required,
             ]),
-            Frequency: new FormControl('1', [
+            Frequency: new FormControl(1, [
                 Validators.required,
             ]),
             Days: new FormControl([], [
@@ -117,7 +117,9 @@ export class CreateTaskComponent {
             EnableAssignableTo: new FormControl('', [
                 Validators.required
             ]),
-            AssignableTo: new FormControl('')
+            AssignableTo: new FormControl('', [
+                this.validateAssignableTo()
+            ])
         });
 
         this.taskAssignmentGroup.get('AssignableTo')?.valueChanges.subscribe({
@@ -129,15 +131,16 @@ export class CreateTaskComponent {
     }
 
     checkAssigneeAvailability(): void {
-        if (!this.taskAssignmentGroup.get('AssignableTo')?.value
-            .includes(this.taskAssignmentGroup.get('InitialAssigneeId')?.value)) {
+        if (!!this.taskAssignmentGroup.get('AssignableTo')?.value &&
+            !this.taskAssignmentGroup.get('AssignableTo')?.value.includes(
+                this.taskAssignmentGroup.get('InitialAssigneeId')?.value)) {
             this.taskAssignmentGroup.get('InitialAssigneeId')?.setValue('');
         }
     }
 
     /**
-     * Marks the days array as required or optional depending on the recurrance selected
-     * @returns if required or not
+     * Marks the days array as required or optional depending on the recurrence selected
+     * @returns Validator function
      */
     daysRequiredIfRecurrenceIsDays(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
@@ -147,6 +150,25 @@ export class CreateTaskComponent {
             }
             return null;
         };
+    }
+
+    /**
+     * Validates AssignableTo field
+     * @returns Validator function
+     */
+    validateAssignableTo(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            // No need to validate if AssignableTo is disabled
+            if (control.parent?.get('EnableAssignableTo')?.value != true) {
+                return null;
+            }
+
+            if (control.value == '') {
+                return { selectionRequired: "Please select at least one assignee" };
+            }
+
+            return null;
+        }
     }
 
     increaseRecurrenceAmount() {

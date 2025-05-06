@@ -125,7 +125,7 @@ export class CreateEditTaskModalComponent {
     }
 
     /**
-     * Marks the days array as required or optional depending on the recurrance selected
+     * Marks the days array as required or optional depending on the recurrence selected
      * @returns if required or not
      */
     daysRequiredIfRecurranceIsDays(): ValidatorFn {

@@ -140,6 +140,10 @@
                             {{ user.name }}
                         </mat-chip-option>
                     </mat-chip-listbox>
+                    @if (this.taskAssignmentGroup.controls['AssignableTo'].hasError('selectionRequired') &&
+                        (this.taskAssignmentGroup.controls['AssignableTo'].touched || this.taskAssignmentGroup.controls['AssignableTo'].dirty)) {
+                        <mat-error>{{ this.taskAssignmentGroup.controls['AssignableTo'].getError('selectionRequired') }}</mat-error>
+                    }
                 </div>
             </div>
 
